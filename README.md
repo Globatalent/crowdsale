@@ -1,6 +1,6 @@
 # crowdsale
 
-- [Whitepaper]()
+Ethereum contracts for the globatalent crowdsale platform.
 
 ## Technical definition
 
