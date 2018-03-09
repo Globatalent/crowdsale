@@ -1,10 +1,8 @@
 // Simulate a full contribution
 
-const MultiSigWallet = artifacts.require("MultiSigWallet");
 const MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
 const Token = artifacts.require("TokenMock");
 const TokenContributionClass = artifacts.require("TokenContributionMock");
-const ContributionWallet = artifacts.require("ContributionWallet");
 const TeamTokensHolder = artifacts.require("TeamTokensHolderMock");
 const ReserveTokensHolder = artifacts.require("ReserveTokensHolderMock");
 const BountiesTokensHolder = artifacts.require("BountiesTokensHolderMock");
@@ -32,14 +30,6 @@ contract("Contribution", function(accounts) {
   const addressDummy1 = accounts[15];
   const addressDummy2 = accounts[16];
 
-  let multisigToken;
-  let multisigCommunity;
-  let multisigReserve;
-  let multisigBounties;
-  let multisigTeam;
-  let multisigAirdrop;
-  let multisigAdvisors;
-  let multisigEarlyInvestors;
   let miniMeTokenFactory;
   let token;
   let tokenContribution;
@@ -62,61 +52,49 @@ contract("Contribution", function(accounts) {
   const exchangeRate = 1;
 
   it("Deploys all contracts", async () => {
-    multisigToken = await MultiSigWallet.new([addressToken], 1);
-    multisigCommunity = await MultiSigWallet.new([addressCommunity], 1);
-    multisigReserve = await MultiSigWallet.new([addressReserve], 1);
-    multisigBounties = await MultiSigWallet.new([addressBounties], 1);
-    multisigTeam = await MultiSigWallet.new([addressTeam], 1);
-    multisigAirdrop = await MultiSigWallet.new([addressAirdrop], 1);
-    multisigAdvisors = await MultiSigWallet.new([addressAdvisors], 1);
-    multisigEarlyInvestors = await MultiSigWallet.new(
-      [addressEarlyInvestors],
-      1
-    );
-
     miniMeTokenFactory = await MiniMeTokenFactory.new();
 
     token = await Token.new(miniMeTokenFactory.address);
     tokenContribution = await TokenContributionClass.new();
 
     teamTokensHolder = await TeamTokensHolder.new(
-      multisigTeam.address,
+      addressTeam,
       tokenContribution.address,
       token.address
     );
 
     reserveTokensHolder = await ReserveTokensHolder.new(
-      multisigReserve.address,
+      addressReserve,
       tokenContribution.address,
       token.address
     );
 
     bountiesTokensHolder = await BountiesTokensHolder.new(
-      multisigBounties.address,
+      addressReserve,
       tokenContribution.address,
       token.address
     );
 
     airdropTokensHolder = await AirdropTokensHolder.new(
-      multisigAirdrop.address,
+      addressAirdrop,
       tokenContribution.address,
       token.address
     );
 
     advisorsTokensHolder = await AdvisorsTokensHolder.new(
-      multisigAdvisors.address,
+      addressAdvisors,
       tokenContribution.address,
       token.address
     );
 
     earlyInvestorsTokensHolder = await EarlyInvestorsTokensHolder.new(
-      multisigEarlyInvestors.address,
+      addressEarlyInvestors,
       tokenContribution.address,
       token.address
     );
 
     tokenPlaceHolder = await TokenPlaceHolderClass.new(
-      multisigCommunity.address,
+      addressTokenHolder,
       token.address,
       tokenContribution.address
     );
@@ -125,7 +103,6 @@ contract("Contribution", function(accounts) {
 
     await tokenContribution.initialize(
       token.address,
-      tokenPlaceHolder.address,
 
       startBlock,
       endBlock,
@@ -151,7 +128,7 @@ contract("Contribution", function(accounts) {
 
     const balance = await token.balanceOf(addressToken);
 
-    assert.equal(web3.fromWei(balance).toNumber(), exchangeRate);
+    assert.equal(web3.fromWei(balance).toNumber(), 1 * exchangeRate);
   });
 
   it("Pauses and resumes the contribution", async () => {
@@ -177,6 +154,12 @@ contract("Contribution", function(accounts) {
         addressToken,
         web3.toWei(tokenContribution.tokensIssued())
       );
+    });
+  });
+
+  it("Doesn't allow transfers after the finalize", async () => {
+    await assertFail(async () => {
+      await token.transfer(addressToken, web3.toWei(1));
     });
   });
 
@@ -261,16 +244,7 @@ contract("Contribution", function(accounts) {
     );
   });
 
-  it("Doesn't allow transfers in the 1 week period", async () => {
-    await assertFail(async () => {
-      await token.transfer(addressTokenHolder, web3.toWei(1));
-    });
-  });
-
-  it("Allows transfers after 1 week period", async () => {
-    const t = Math.floor(new Date().getTime() / 1000) + 86400 * 7 + 1000;
-    await tokenPlaceHolder.setMockedTime(t);
-
+  it("Allows transfers after finalize", async () => {
     await token.transfer(addressDummy1, web3.toWei(1));
 
     const balance2 = await token.balanceOf(addressDummy1);
@@ -279,15 +253,10 @@ contract("Contribution", function(accounts) {
   });
 
   it("Checks that Token's Controller is upgradeable", async () => {
-    await multisigCommunity.submitTransaction(
-      tokenPlaceHolder.address,
-      0,
-      tokenPlaceHolder.contract.changeController.getData(accounts[9]),
-      { from: addressCommunity }
-    );
+    await tokenContribution.changeController(tokenPlaceHolder.address);
 
     const controller = await token.controller();
 
-    assert.equal(controller, accounts[9]);
+    assert.equal(controller, tokenPlaceHolder.address);
   });
 });

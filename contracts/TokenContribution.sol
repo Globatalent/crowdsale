@@ -33,8 +33,6 @@ contract TokenContribution is Owned, TokenController {
     address public destTokensAdvisors;
     address public destTokensEarlyInvestors;
 
-    address public tokenController;
-
     uint256 public totalTokensGenerated;
 
     uint256 public finalizedBlock;
@@ -49,14 +47,6 @@ contract TokenContribution is Owned, TokenController {
         _;
     }
 
-    modifier contributionOpen() {
-        require(getBlockNumber() >= startBlock &&
-        getBlockNumber() <= endBlock &&
-        finalizedBlock == 0 &&
-        address(Token) != 0x0);
-        _;
-    }
-
     modifier notPaused() {
         require(!paused);
         _;
@@ -66,12 +56,19 @@ contract TokenContribution is Owned, TokenController {
         paused = false;
     }
 
+    /// @notice The owner of this contract can change the controller of the DEKA token
+    ///  Please, be sure that the owner is a trusted agent or 0x0 address.
+    /// @param _newController The address of the new controller
+    function changeController(address _newController) public onlyOwner {
+        Token.changeController(_newController);
+        ControllerChanged(_newController);
+    }
+
 
     /// @notice This method should be called by the owner before the contribution
     ///  period starts This initializes most of the parameters
     function initialize(
         address _token,
-        address _tokenController,
         uint256 _startBlock,
         uint256 _endBlock,
         address _destTokensReserve,
@@ -88,9 +85,6 @@ contract TokenContribution is Owned, TokenController {
         require(Token.totalSupply() == 0);
         require(Token.controller() == address(this));
         require(Token.decimals() == 18); // Same amount of decimals as ETH
-
-        require(_tokenController != 0x0);
-        tokenController = _tokenController;
 
         require(_startBlock >= getBlockNumber());
         require(_startBlock < _endBlock);
@@ -122,7 +116,6 @@ contract TokenContribution is Owned, TokenController {
         proxyPayment(msg.sender);
     }
 
-
     //////////
     // MiniMe Controller functions
     //////////
@@ -135,12 +128,19 @@ contract TokenContribution is Owned, TokenController {
         return false;
     }
 
-    function onTransfer(address, address, uint256) public returns (bool) {
-        return false;
+    function onTransfer(address _from, address, uint256) public returns (bool) {
+        return transferable(_from);
+    }
+    
+    function onApprove(address _from, address, uint256) public returns (bool) {
+        return transferable(_from);
     }
 
-    function onApprove(address, address, uint256) public returns (bool) {
-        return false;
+    function transferable(address _from) internal returns (bool) {
+        // Allow the exchanger to work from the beginning
+        if (finalizedTime == 0) return false;
+
+        return (getTime() > finalizedTime) || (_from == owner);
     }
 
     function generate(address _th, uint256 _amount) public onlyOwner {
@@ -249,8 +249,6 @@ contract TokenContribution is Owned, TokenController {
                 destTokensEarlyInvestors,
                 maxSupply.mul(percentageToEarlyInvestors).div(percent(100))));
 
-        Token.changeController(tokenController);
-
         Finalized();
     }
 
@@ -290,6 +288,11 @@ contract TokenContribution is Owned, TokenController {
         return block.number;
     }
 
+    /// @notice This function is overrided by the test Mocks.
+    function getTime() internal returns (uint256) {
+        return now;
+    }
+
 
     //////////
     // Safety Methods
@@ -327,10 +330,9 @@ contract TokenContribution is Owned, TokenController {
 
     event ClaimedTokens(address indexed _token, address indexed _controller, uint256 _amount);
 
+    event ControllerChanged(address indexed _newController);
+
     event NewSale(address indexed _th, uint256 _amount);
 
-    event GuaranteedAddress(address indexed _th, uint256 _limit);
-
     event Finalized();
-
 }
