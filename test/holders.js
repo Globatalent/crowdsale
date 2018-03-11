@@ -124,13 +124,14 @@ contract("Holders", function(accounts) {
   });
 
   it("Disallows team from transfering before 12 months have past", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 359;
+    await teamTokensHolder.setMockedTime(t);
+
     // This function will fail in the multisig
-    await teamTokensHolder.collectTokens({from: addressTeam});
-
-    await token.setMockedBlockNumber(1042000);
-
-    const balance = await token.balanceOf(addressTeam);
-    assert.equal(balance, 0);
+    await assertFail(async () => {
+      await teamTokensHolder.collectTokens({ from: addressTeam });
+    });
   });
 
   it("Allows team to extract 40% after 12 months", async () => {
@@ -138,7 +139,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 362;
     await teamTokensHolder.setMockedTime(t);
 
-    await teamTokensHolder.collectTokens({from: addressTeam});
+    await teamTokensHolder.collectTokens({ from: addressTeam });
 
     await token.setMockedBlockNumber(1043000);
 
@@ -160,19 +161,14 @@ contract("Holders", function(accounts) {
   it("Disallow to extract from 40% from team again", async () => {
     const t =
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 361;
-    await reserveTokensHolder.setMockedTime(t);
+    await teamTokensHolder.setMockedTime(t);
 
     const preBalance = await token.balanceOf(addressTeam);
     const postRealTokens = web3.fromWei(preBalance).toNumber();
 
-    await teamTokensHolder.collectTokens({from: addressTeam});
-
-    await token.setMockedBlockNumber(1044000);
-
-    const postBalance = await token.balanceOf(addressTeam);
-    const preRealTokens = web3.fromWei(postBalance).toNumber();
-
-    assert.equal(preRealTokens, postRealTokens);
+    await assertFail(async () => {
+      await teamTokensHolder.collectTokens({ from: addressTeam });
+    });
   });
 
   it("Allows team to extract 80% after 24 months", async () => {
@@ -180,7 +176,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 721;
     await teamTokensHolder.setMockedTime(t);
 
-    await teamTokensHolder.collectTokens({from: addressTeam});
+    await teamTokensHolder.collectTokens({ from: addressTeam });
 
     await token.setMockedBlockNumber(1045000);
 
@@ -202,19 +198,14 @@ contract("Holders", function(accounts) {
   it("Disallow to extract from 80% from team again", async () => {
     const t =
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 721;
-    await reserveTokensHolder.setMockedTime(t);
+    await teamTokensHolder.setMockedTime(t);
 
     const preBalance = await token.balanceOf(addressTeam);
     const postRealTokens = web3.fromWei(preBalance).toNumber();
 
-    await teamTokensHolder.collectTokens({from: addressTeam});
-
-    await token.setMockedBlockNumber(1050000);
-
-    const postBalance = await token.balanceOf(addressTeam);
-    const preRealTokens = web3.fromWei(postBalance).toNumber();
-
-    assert.equal(preRealTokens, postRealTokens);
+    await assertFail(async () => {
+      await teamTokensHolder.collectTokens({ from: addressTeam });
+    });
   });
 
   it("Allows team to extract everything after 36 months", async () => {
@@ -222,7 +213,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 1080 + 10; // 10 second after 36 months
     await teamTokensHolder.setMockedTime(t);
 
-    await teamTokensHolder.collectTokens({from: addressTeam});
+    await teamTokensHolder.collectTokens({ from: addressTeam });
 
     await token.setMockedBlockNumber(1060000);
 
@@ -245,12 +236,9 @@ contract("Holders", function(accounts) {
     const t = Math.floor(new Date().getTime() / 1000) + 86400 * 539;
     await reserveTokensHolder.setMockedTime(t);
 
-    await teamTokensHolder.collectTokens();
-
-    await token.setMockedBlockNumber(1070000);
-
-    const balance = await token.balanceOf(addressReserve);
-    assert.equal(balance, 0);
+    await assertFail(async () => {
+      await reserveTokensHolder.collectTokens({ from: addressReserve });
+    });
   });
 
   it("Allows to extract 50% from reserve after 18 months", async () => {
@@ -258,7 +246,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 540 + 10;
     await reserveTokensHolder.setMockedTime(t);
 
-    await reserveTokensHolder.collectTokens();
+    await reserveTokensHolder.collectTokens({ from: addressReserve });
 
     await token.setMockedBlockNumber(1080000);
 
@@ -285,14 +273,9 @@ contract("Holders", function(accounts) {
     const preBalance = await token.balanceOf(addressReserve);
     const postRealTokens = web3.fromWei(preBalance).toNumber();
 
-    await reserveTokensHolder.collectTokens();
-
-    await token.setMockedBlockNumber(1090000);
-
-    const postBalance = await token.balanceOf(addressReserve);
-    const preRealTokens = web3.fromWei(postBalance).toNumber();
-
-    assert.equal(preRealTokens, postRealTokens);
+    await assertFail(async () => {
+      await reserveTokensHolder.collectTokens({ from: addressReserve });
+    });
   });
 
   it("Allows to extract everything from reserve after 36 months", async () => {
@@ -300,7 +283,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 1085;
     await reserveTokensHolder.setMockedTime(t);
 
-    await reserveTokensHolder.collectTokens();
+    await reserveTokensHolder.collectTokens({ from: addressReserve });
 
     await token.setMockedBlockNumber(1100000);
 
@@ -317,16 +300,12 @@ contract("Holders", function(accounts) {
   });
 
   it("Disallows airdrop from transfering before 3 months have past", async () => {
-    const t =
-      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 89;
+    const t = (await tokenContribution.finalizedTime()).toNumber() + 86400 * 89;
     await airdropTokensHolder.setMockedTime(t);
 
-    await airdropTokensHolder.collectTokens();
-
-    await token.setMockedBlockNumber(1200000);
-
-    const balance = await token.balanceOf(addressAirdrop);
-    assert.equal(balance, 0);
+    await assertFail(async () => {
+      await airdropTokensHolder.collectTokens({ from: addressAirdrop });
+    });
   });
 
   it("Allows airdrop to extract 25% after 3 months", async () => {
@@ -334,7 +313,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 90 + 10;
     await airdropTokensHolder.setMockedTime(t);
 
-    await airdropTokensHolder.collectTokens();
+    await airdropTokensHolder.collectTokens({ from: addressAirdrop });
 
     await token.setMockedBlockNumber(1300000);
 
@@ -361,14 +340,9 @@ contract("Holders", function(accounts) {
     const preBalance = await token.balanceOf(addressTeam);
     const postRealTokens = web3.fromWei(preBalance).toNumber();
 
-    await airdropTokensHolder.collectTokens();
-
-    await token.setMockedBlockNumber(1400000);
-
-    const postBalance = await token.balanceOf(addressAirdrop);
-    const preRealTokens = web3.fromWei(postBalance).toNumber();
-
-    assert.equal(preRealTokens, postRealTokens);
+    await assertFail(async () => {
+      await airdropTokensHolder.collectTokens({ from: addressAirdrop });
+    });
   });
 
   it("Allows airdrop to extract 50% after 6 months", async () => {
@@ -376,7 +350,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 180 + 10;
     await airdropTokensHolder.setMockedTime(t);
 
-    await airdropTokensHolder.collectTokens();
+    await airdropTokensHolder.collectTokens({ from: addressAirdrop });
 
     await token.setMockedBlockNumber(1500000);
 
@@ -403,14 +377,9 @@ contract("Holders", function(accounts) {
     const preBalance = await token.balanceOf(addressAirdrop);
     const postRealTokens = web3.fromWei(preBalance).toNumber();
 
-    await token.setMockedBlockNumber(1600000);
-
-    await airdropTokensHolder.collectTokens();
-
-    const postBalance = await token.balanceOf(addressAirdrop);
-    const preRealTokens = web3.fromWei(postBalance).toNumber();
-
-    assert.equal(preRealTokens, postRealTokens);
+    await assertFail(async () => {
+      await airdropTokensHolder.collectTokens({ from: addressAirdrop });
+    });
   });
 
   it("Allows airdrop to extract 75% after 9 months", async () => {
@@ -418,7 +387,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 270 + 10;
     await airdropTokensHolder.setMockedTime(t);
 
-    await airdropTokensHolder.collectTokens();
+    await airdropTokensHolder.collectTokens({ from: addressAirdrop });
 
     await token.setMockedBlockNumber(1700000);
 
@@ -445,14 +414,9 @@ contract("Holders", function(accounts) {
     const preBalance = await token.balanceOf(addressAirdrop);
     const postRealTokens = web3.fromWei(preBalance).toNumber();
 
-    await airdropTokensHolder.collectTokens();
-
-    await token.setMockedBlockNumber(1800000);
-
-    const postBalance = await token.balanceOf(addressAirdrop);
-    const preRealTokens = web3.fromWei(postBalance).toNumber();
-
-    assert.equal(preRealTokens, postRealTokens);
+    await assertFail(async () => {
+      await airdropTokensHolder.collectTokens({ from: addressAirdrop });
+    });
   });
 
   it("Allows airdrop to extract everything after 12 months", async () => {
@@ -460,7 +424,7 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 360 + 10;
     await airdropTokensHolder.setMockedTime(t);
 
-    await airdropTokensHolder.collectTokens();
+    await airdropTokensHolder.collectTokens({ from: addressAirdrop });
 
     await token.setMockedBlockNumber(1900000);
 
@@ -468,6 +432,186 @@ contract("Holders", function(accounts) {
 
     const calcTokens = maxSupply
       .mul(0.02)
+      .mul(1)
+      .toNumber();
+    const realTokens = web3.fromWei(balance).toNumber();
+
+    // Check that tokens tokens exists
+    assert(calcTokens > 0);
+    assert(realTokens > 0, "No tokens transferred on claim");
+
+    assert.equal(realTokens, calcTokens);
+  });
+
+  it("Disallows advisors from transfering before 2 months have past", async () => {
+    const t = (await tokenContribution.finalizedTime()).toNumber() + 86400 * 59;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    await assertFail(async () => {
+      await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+    });
+  });
+
+  it("Allows advisors to extract 20% after 2 months", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 60 + 10;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+
+    await token.setMockedBlockNumber(2000000);
+
+    const balance = await token.balanceOf(addressAdvisors);
+
+    const calcTokens = maxSupply
+      .mul(0.07)
+      .mul(0.2)
+      .toNumber();
+    const realTokens = web3.fromWei(balance).toNumber();
+
+    // Check that tokens exists
+    assert(calcTokens > 0);
+    assert(realTokens > 0, "No tokens transferred on claim");
+
+    assert.equal(realTokens, calcTokens);
+  });
+
+  it("Disallow to extract from 20% from advisors again", async () => {
+    const t = (await tokenContribution.finalizedTime()).toNumber() + 86400 * 61;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    const preBalance = await token.balanceOf(addressAdvisors);
+    const postRealTokens = web3.fromWei(preBalance).toNumber();
+
+    await assertFail(async () => {
+      await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+    });
+  });
+
+  it("Allows advisors to extract 40% after 3 months", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 90 + 10;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+
+    await token.setMockedBlockNumber(2100000);
+
+    const balance = await token.balanceOf(addressAdvisors);
+
+    const calcTokens = maxSupply
+      .mul(0.07)
+      .mul(0.4)
+      .toNumber();
+    const realTokens = web3.fromWei(balance).toNumber();
+
+    // Check that tokens exists
+    assert(calcTokens > 0);
+    assert(realTokens > 0, "No tokens transferred on claim");
+
+    assert.equal(realTokens, calcTokens);
+  });
+
+  it("Disallow to extract from 40% from airdrop again", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 90 + 10;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    const preBalance = await token.balanceOf(addressAdvisors);
+    const postRealTokens = web3.fromWei(preBalance).toNumber();
+
+    await assertFail(async () => {
+      await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+    });
+  });
+
+  it("Allows advisors to extract 60% after 4 months", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 120 + 10;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+
+    await token.setMockedBlockNumber(2200000);
+
+    const balance = await token.balanceOf(addressAdvisors);
+
+    const calcTokens = maxSupply
+      .mul(0.07)
+      .mul(0.6)
+      .toNumber();
+    const realTokens = web3.fromWei(balance).toNumber();
+
+    // Check that tokens exists
+    assert(calcTokens > 0);
+    assert(realTokens > 0, "No tokens transferred on claim");
+
+    assert.equal(realTokens, calcTokens);
+  });
+
+  it("Disallow to extract from 60% from advisors again", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 120 + 10;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    const preBalance = await token.balanceOf(addressAdvisors);
+    const postRealTokens = web3.fromWei(preBalance).toNumber();
+
+    await assertFail(async () => {
+      await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+    });
+  });
+
+  it("Allows advisors to extract 80% after 5 months", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 150 + 10;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+
+    await token.setMockedBlockNumber(2300000);
+
+    const balance = await token.balanceOf(addressAdvisors);
+
+    const calcTokens = maxSupply
+      .mul(0.07)
+      .mul(0.8)
+      .toNumber();
+    const realTokens = web3.fromWei(balance).toNumber();
+
+    // Check that tokens exists
+    assert(calcTokens > 0);
+    assert(realTokens > 0, "No tokens transferred on claim");
+
+    assert.equal(realTokens, calcTokens);
+  });
+
+  it("Disallow to extract from 80% from advisors again", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 150 + 10;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    const preBalance = await token.balanceOf(addressAdvisors);
+    const postRealTokens = web3.fromWei(preBalance).toNumber();
+
+    await assertFail(async () => {
+      await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+    });
+  });
+
+  it("Allows advisors to extract everything after 6 months", async () => {
+    const t =
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 180 + 10;
+    await advisorsTokensHolder.setMockedTime(t);
+
+    await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
+
+    await token.setMockedBlockNumber(2400000);
+
+    const balance = await token.balanceOf(addressAdvisors);
+
+    const calcTokens = maxSupply
+      .mul(0.07)
       .mul(1)
       .toNumber();
     const realTokens = web3.fromWei(balance).toNumber();

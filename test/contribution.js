@@ -121,10 +121,10 @@ contract("Contribution", function(accounts) {
   });
 
   it("Moves time to start of the ICO, and does the first generate", async () => {
+    tokenContribution.generate(addressToken, web3.toWei(1));
+
     await tokenContribution.setMockedBlockNumber(1010000);
     await token.setMockedBlockNumber(1010000);
-
-    tokenContribution.generate(addressToken, web3.toWei(1));
 
     const balance = await token.balanceOf(addressToken);
 
@@ -132,8 +132,8 @@ contract("Contribution", function(accounts) {
   });
 
   it("Pauses and resumes the contribution", async () => {
-    await tokenContribution.setMockedBlockNumber(1005000);
-    await token.setMockedBlockNumber(1005000);
+    await tokenContribution.setMockedBlockNumber(1020000);
+    await token.setMockedBlockNumber(1020000);
     await tokenContribution.pauseContribution();
     await assertFail(async () => {
       await token.sendTransaction({
@@ -146,8 +146,8 @@ contract("Contribution", function(accounts) {
   });
 
   it("Check sale limit", async () => {
-    await tokenContribution.setMockedBlockNumber(1010000);
-    await token.setMockedBlockNumber(1010000);
+    await tokenContribution.setMockedBlockNumber(1030000);
+    await token.setMockedBlockNumber(1030000);
 
     await assertFail(async () => {
       await tokenContribution.generate(
