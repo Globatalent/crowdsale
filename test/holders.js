@@ -42,7 +42,7 @@ contract("Holders", function(accounts) {
   let tokenPlaceHolder;
 
   const startBlock = 1000000;
-  const endBlock = 1040000;
+  const endBlock = 1030000;
 
   const maxSupply = new BigNumber("1e9"); // 6 billions in ethers
   const percentToSale = 50; // Percentage of coins for the ico
@@ -145,8 +145,6 @@ contract("Holders", function(accounts) {
     
     await teamTokensHolder.collectTokens({ from: addressTeam });
 
-    await token.setMockedBlockNumber(1043000);
-
     const balance = await token.balanceOf(addressTeam);
 
     const calcTokens = maxSupply
@@ -166,9 +164,6 @@ contract("Holders", function(accounts) {
     const t =
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 361;
     await teamTokensHolder.setMockedTime(t);
-
-    const preBalance = await token.balanceOf(addressTeam);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
 
     await assertFail(async () => {
       await teamTokensHolder.collectTokens({ from: addressTeam });
@@ -203,9 +198,6 @@ contract("Holders", function(accounts) {
     const t =
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 721;
     await teamTokensHolder.setMockedTime(t);
-
-    const preBalance = await token.balanceOf(addressTeam);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
 
     await assertFail(async () => {
       await teamTokensHolder.collectTokens({ from: addressTeam });
@@ -274,9 +266,6 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 542;
     await reserveTokensHolder.setMockedTime(t);
 
-    const preBalance = await token.balanceOf(addressReserve);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
-
     await assertFail(async () => {
       await reserveTokensHolder.collectTokens({ from: addressReserve });
     });
@@ -341,9 +330,6 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 90 + 10;
     await airdropTokensHolder.setMockedTime(t);
 
-    const preBalance = await token.balanceOf(addressTeam);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
-
     await assertFail(async () => {
       await airdropTokensHolder.collectTokens({ from: addressAirdrop });
     });
@@ -378,9 +364,6 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 180 + 10;
     await airdropTokensHolder.setMockedTime(t);
 
-    const preBalance = await token.balanceOf(addressAirdrop);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
-
     await assertFail(async () => {
       await airdropTokensHolder.collectTokens({ from: addressAirdrop });
     });
@@ -414,9 +397,6 @@ contract("Holders", function(accounts) {
     const t =
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 270 + 10;
     await airdropTokensHolder.setMockedTime(t);
-
-    const preBalance = await token.balanceOf(addressAirdrop);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
 
     await assertFail(async () => {
       await airdropTokensHolder.collectTokens({ from: addressAirdrop });
@@ -484,9 +464,6 @@ contract("Holders", function(accounts) {
     const t = (await tokenContribution.finalizedTime()).toNumber() + 86400 * 61;
     await advisorsTokensHolder.setMockedTime(t);
 
-    const preBalance = await token.balanceOf(addressAdvisors);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
-
     await assertFail(async () => {
       await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
     });
@@ -520,9 +497,6 @@ contract("Holders", function(accounts) {
     const t =
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 90 + 10;
     await advisorsTokensHolder.setMockedTime(t);
-
-    const preBalance = await token.balanceOf(addressAdvisors);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
 
     await assertFail(async () => {
       await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
@@ -558,9 +532,6 @@ contract("Holders", function(accounts) {
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 120 + 10;
     await advisorsTokensHolder.setMockedTime(t);
 
-    const preBalance = await token.balanceOf(addressAdvisors);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
-
     await assertFail(async () => {
       await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
     });
@@ -594,9 +565,6 @@ contract("Holders", function(accounts) {
     const t =
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 150 + 10;
     await advisorsTokensHolder.setMockedTime(t);
-
-    const preBalance = await token.balanceOf(addressAdvisors);
-    const postRealTokens = web3.fromWei(preBalance).toNumber();
 
     await assertFail(async () => {
       await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
