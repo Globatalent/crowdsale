@@ -30,14 +30,18 @@ contract AdvisorsTokensHolder is Owned {
         require(finalizedTime > 0 && getTime() > finalizedTime.add(months(2)));
 
         uint256 canExtract = 0;
-        if (getTime() <= finalizedTime.add(months(2))) {
+        if (getTime() <= finalizedTime.add(months(3))) {
+            require(collectedTokens < total.percent(20));
             canExtract = total.percent(20);
-        } else if (getTime() <= finalizedTime.add(months(3))) {
-            canExtract = total.percent(20);
-        } else if (getTime() <= finalizedTime.add(months(4))) {
-            canExtract = total.percent(20);
-        } else if (getTime() <= finalizedTime.add(months(5))) {
-            canExtract = total.percent(20);
+        } else if (getTime() > finalizedTime.add(months(3)) && getTime() <= finalizedTime.add(months(4))) {
+            require(collectedTokens < total.percent(40));
+            canExtract = total.percent(40);
+        } else if (getTime() > finalizedTime.add(months(4)) && getTime() <= finalizedTime.add(months(5))) {
+            require(collectedTokens < total.percent(60));
+            canExtract = total.percent(60);
+        } else if (getTime() > finalizedTime.add(months(5)) && getTime() <= finalizedTime.add(months(6))) {
+            require(collectedTokens < total.percent(80));
+            canExtract = total.percent(80);
         } else {
             canExtract = total;
         }

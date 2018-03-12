@@ -27,14 +27,19 @@ contract AirdropTokensHolder is Owned {
 
         uint256 finalizedTime = crowdsale.finalizedTime();
 
-        require(finalizedTime > 0 && getTime() > finalizedTime.add(months(18)));
+        require(finalizedTime > 0 && getTime() > finalizedTime.add(months(3)));
 
         uint256 canExtract = 0;
-        if (getTime() <= finalizedTime.add(months(36))) {
+        if (getTime() <= finalizedTime.add(months(6))) {
+            require(collectedTokens < total.percent(25));
+            canExtract = total.percent(25);
+        } else if (getTime() > finalizedTime.add(months(6)) && getTime() <= finalizedTime.add(months(9))) {
             require(collectedTokens < total.percent(50));
             canExtract = total.percent(50);
+        } else if (getTime() > finalizedTime.add(months(9)) && getTime() <= finalizedTime.add(months(12))) {
+            require(collectedTokens < total.percent(75));
+            canExtract = total.percent(75);
         } else {
-            require(collectedTokens < total);
             canExtract = total;
         }
 
