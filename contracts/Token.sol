@@ -10,7 +10,7 @@ contract Token is MiniMeToken {
         0x0,            // no parent token
         0,              // no snapshot block number from parent
         "GBT",          // Token name
-        18,             // Decimals
+        8,             // Decimals
         "GBT",          // Symbol
         true            // Enable transfers
     ) {}

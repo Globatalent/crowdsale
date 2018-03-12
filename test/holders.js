@@ -746,7 +746,7 @@ contract("Holders", function(accounts) {
     });
   });
 
-  it("Allows advisors to extract everything after 9 months", async () => {
+  it("Allows early investors to extract everything after 9 months", async () => {
     const t =
       (await tokenContribution.finalizedTime()).toNumber() + 86400 * 270 + 10;
     await earlyInvestorsTokensHolder.setMockedTime(t);
