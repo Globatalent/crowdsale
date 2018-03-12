@@ -84,7 +84,7 @@ contract TokenContribution is Owned, TokenController {
         Token = MiniMeToken(_token);
         require(Token.totalSupply() == 0);
         require(Token.controller() == address(this));
-        require(Token.decimals() == 18); // Same amount of decimals as ETH
+        require(Token.decimals() == 8);
 
         require(_startBlock >= getBlockNumber());
         require(_startBlock < _endBlock);
