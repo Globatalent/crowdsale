@@ -35,8 +35,10 @@ contract TeamTokensHolder is Owned {
 
         uint256 canExtract = 0;
         if (getTime() <= finalizedTime.add(months(24))) {
+            require(collectedTokens < total.percent(40));
             canExtract = total.percent(40);
         } else if (getTime() > finalizedTime.add(months(24)) && getTime() <= finalizedTime.add(months(36))) {
+            require(collectedTokens < total.percent(80));
             canExtract = total.percent(80);
         } else {
             canExtract = total;

@@ -1,8 +1,6 @@
-const MultiSigWallet = artifacts.require("MultiSigWallet");
 const MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
 const Token = artifacts.require("Token");
 const TokenContribution = artifacts.require("TokenContribution");
-const ContributionWallet = artifacts.require("ContributionWallet");
 const TeamTokensHolder = artifacts.require("TeamTokensHolder");
 const BountiesTokensHolder = artifacts.require("BountiesTokensHolder");
 const AdvisorsTokensHolder = artifacts.require("AdvisorsTokensHolder");
@@ -11,28 +9,22 @@ const EarlyInvestorsTokensHolder = artifacts.require(
   "EarlyInvestorsTokensHolder"
 );
 const ReserveTokensHolder = artifacts.require("ReserveTokensHolder");
-const TokenPlaceHolder = artifacts.require("TokenPlaceHolder");
+const TokenPlaceHolder = artifacts.require("TokenPlaceHolderMock");
 
 // All of these constants need to be configured before deploy
-const addressMainOwner = "0x00349679446e6bfb3232eAfe69e4157FFf98cace";
+const addressMainOwner = "0x128a906fbfd8497f0adc03d523d656ef16dfdff6";
 
-const addressesReserve = [addressMainOwner];
-const multisigReserveReqs = 1;
+const addressesReserve = addressMainOwner;
 
-const addressesTeam = [addressMainOwner];
-const multisigTeamReqs = 1;
+const addressesTeam = addressMainOwner;
 
-const addressesBounties = [addressMainOwner];
-const multisigBountiesReqs = 1;
+const addressesBounties = addressMainOwner;
 
-const addressesAirdrop = [addressMainOwner];
-const multisigAirdropReqs = 1;
+const addressesAirdrop = addressMainOwner;
 
-const addressesAdvisors = [addressMainOwner];
-const multisigAdvisorsReqs = 1;
+const addressesAdvisors = addressMainOwner;
 
-const addressesEarlyInvestors = [addressMainOwner];
-const multisigEarlyInvestorsReqs = 1;
+const addressesEarlyInvestors = addressMainOwner;
 
 const startBlock = 1941920;
 const endBlock = 1942000;
@@ -40,57 +32,9 @@ const endBlock = 1942000;
 module.exports = async function(deployer, network, accounts) {
   //if (network === "development") return;  // Don't deploy on tests
   console.log("Start migrating: ");
-  // MultiSigWallet send
-  let multisigReserveFuture = MultiSigWallet.new(
-    addressesReserve,
-    multisigReserveReqs
-  );
-
-  let multisigTeamFuture = MultiSigWallet.new(addressesTeam, multisigTeamReqs);
-
-  let multisigBountiesFuture = MultiSigWallet.new(
-    addressesBounties,
-    multisigBountiesReqs
-  );
-
-  let multisigAirdropFuture = MultiSigWallet.new(
-    addressesAirdrop,
-    multisigAirdropReqs
-  );
-
-  let multisigAdvisorsFuture = MultiSigWallet.new(
-    addressesAdvisors,
-    multisigAdvisorsReqs
-  );
-
-  let multisigEarlyInvestorsFuture = MultiSigWallet.new(
-    addressesEarlyInvestors,
-    multisigEarlyInvestorsReqs
-  );
 
   // MiniMeTokenFactory send
   let miniMeTokenFactoryFuture = MiniMeTokenFactory.new();
-
-  // MultiSigWallet wait
-  let multisigReserve = await multisigReserveFuture;
-  console.log("MultiSigWallet Reserve: " + multisigReserve.address + "\n");
-
-  let multisigTeam = await multisigTeamFuture;
-  console.log("MultiSigWallet Team: " + multisigTeam.address + "\n");
-
-  let multisigBounties = await multisigBountiesFuture;
-  console.log("MultiSigWallet Bounties: " + multisigBounties.address + "\n");
-
-  let multisigAirdrop = await multisigAirdropFuture;
-  console.log("MultiSigWallet Airdrop: " + multisigAirdrop.address + "\n");
-
-  let multisigAdvisors = await multisigAdvisorsFuture;
-  console.log("MultiSigWallet Advisors: " + multisigAdvisors.address + "\n");
-
-  let multisigEarlyInvestors = await multisigEarlyInvestorsFuture;
-  console.log(
-    "MultiSigWallet Early Investors: " + multisigEarlyInvestors.address + "\n"
-  );
 
   // MiniMeTokenFactory wait
   let miniMeTokenFactory = await miniMeTokenFactoryFuture;
@@ -103,7 +47,8 @@ module.exports = async function(deployer, network, accounts) {
   // Token wait
   let token = await tokenFuture;
   console.log("Token: " + token.address);
-  // StatusContribution wait
+
+  // Contribution wait
   let tokenContribution = await tokenCrowdsaleFuture;
   console.log("Token contribution: " + tokenContribution.address + "\n");
 
@@ -116,38 +61,44 @@ module.exports = async function(deployer, network, accounts) {
 
   // TeamTokensHolder send
   let teamTokensHolderFuture = TeamTokensHolder.new(
-    multisigTeam.address,
-    tokenContribution.address
+    addressMainOwner,
+    tokenContribution.address,
+    token.address
   );
 
   // ReserveTokensHolder send
   let reserveTokensHolderFuture = ReserveTokensHolder.new(
-    multisigReserve.address,
-    tokenContribution.address
+    addressMainOwner,
+    tokenContribution.address,
+    token.address
   );
 
   // BountiesTokensHolder send
   let bountiesTokensHolderFuture = BountiesTokensHolder.new(
-    multisigBounties.address,
-    tokenContribution.address
+    addressMainOwner,
+    tokenContribution.address,
+    token.address
   );
 
   // AirdropTokensHolder send
   let airdropTokensHolderFuture = AirdropTokensHolder.new(
-    multisigAirdrop.address,
-    tokenContribution.address
+    addressMainOwner,
+    tokenContribution.address,
+    token.address
   );
 
   // EarlyInvestorsTokensHolder send
   let advisorsTokensHolderFuture = AdvisorsTokensHolder.new(
-    multisigAdvisors.address,
-    tokenContribution.address
+    addressMainOwner,
+    tokenContribution.address,
+    token.address
   );
 
   // AdvisorsTokensHolder send
   let earlyInvestorsTokensHolderFuture = EarlyInvestorsTokensHolder.new(
-    multisigEarlyInvestors.address,
-    tokenContribution.address
+    addressMainOwner,
+    tokenContribution.address,
+    token.address
   );
 
   // Waits and logs
@@ -167,7 +118,9 @@ module.exports = async function(deployer, network, accounts) {
   console.log("AdvisorsTokensHolder: " + advisorsTokensHolder.address + "\n");
 
   let earlyInvestorsTokensHolder = await earlyInvestorsTokensHolderFuture;
-  console.log("EarlyInvestorsTokensHolder: " + earlyInvestorsTokensHolder.address + "\n");
+  console.log(
+    "EarlyInvestorsTokensHolder: " + earlyInvestorsTokensHolder.address + "\n"
+  );
 
   // TokenPlaceHolder send
   let tokenPlaceHolderFuture = TokenPlaceHolder.new(
@@ -183,7 +136,6 @@ module.exports = async function(deployer, network, accounts) {
   // Token Contribution initialize send/wait
   await tokenContribution.initialize(
     token.address,
-    placeHolder.address,
 
     startBlock,
     endBlock,

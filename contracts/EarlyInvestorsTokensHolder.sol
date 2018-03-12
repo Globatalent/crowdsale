@@ -27,12 +27,18 @@ contract EarlyInvestorsTokensHolder is Owned {
 
         uint256 finalizedTime = crowdsale.finalizedTime();
 
-        require(finalizedTime > 0 && getTime() > finalizedTime.add(months(18)));
+        require(finalizedTime > 0 && getTime() > finalizedTime.add(1 days));
 
         uint256 canExtract = 0;
-        if (getTime() <= finalizedTime.add(months(36))) {
-            require(collectedTokens < total.percent(50));
-            canExtract = total.percent(50);
+        if (getTime() <= finalizedTime.add(months(3))) {
+            require(collectedTokens < total.percent(40));
+            canExtract = total.percent(40);
+        } else if (getTime() > finalizedTime.add(months(3)) && getTime() <= finalizedTime.add(months(6))) {
+            require(collectedTokens < total.percent(60));
+            canExtract = total.percent(60);
+        } else if (getTime() > finalizedTime.add(months(6)) && getTime() <= finalizedTime.add(months(9))) {
+            require(collectedTokens < total.percent(80));
+            canExtract = total.percent(80);
         } else {
             require(collectedTokens < total);
             canExtract = total;
