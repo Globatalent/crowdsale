@@ -73,10 +73,17 @@ contract TokenContribution is Owned, TokenController {
         // Initialize only once
         require(address(token) == 0x0);
 
+<<<<<<< HEAD
         token = MiniMeToken(_token);
         require(token.totalSupply() == 0);
         require(token.controller() == address(this));
         require(token.decimals() == 8);
+=======
+        Token = MiniMeToken(_token);
+        require(Token.totalSupply() == 0);
+        require(Token.controller() == address(this));
+        require(Token.decimals() == 8);
+>>>>>>> Change token decimals from 18 to 8
 
         require(_startBlock >= getBlockNumber());
         require(_startBlock < _endBlock);
