@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 
 import "./MiniMeToken.sol";
@@ -50,16 +50,16 @@ contract AirdropTokensHolder is Owned {
         }
 
         collectedTokens = collectedTokens.add(canExtract);
-        assert(miniMeToken.transfer(owner, canExtract));
+        miniMeToken.transfer(owner, canExtract);
 
         TokensWithdrawn(owner, canExtract);
     }
 
-    function months(uint256 m) internal returns (uint256) {
+    function months(uint256 m) internal pure returns (uint256) {
         return m.mul(30 days);
     }
 
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return now;
     }
 

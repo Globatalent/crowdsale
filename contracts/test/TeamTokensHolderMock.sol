@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import '../TeamTokensHolder.sol';
 
@@ -6,9 +6,9 @@ import '../TeamTokensHolder.sol';
 
 contract TeamTokensHolderMock is TeamTokensHolder {
 
-    function TeamTokensHolderMock(address _owner, address _crowdsale, address _token) TeamTokensHolder(_owner, _crowdsale, _token) {}
+    function TeamTokensHolderMock(address _owner, address _crowdsale, address _token) TeamTokensHolder(_owner, _crowdsale, _token) public {}
 
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return mock_date;
     }
 

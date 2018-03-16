@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import '../ReserveTokensHolder.sol';
 
@@ -6,9 +6,9 @@ import '../ReserveTokensHolder.sol';
 
 contract ReserveTokensHolderMock is ReserveTokensHolder {
 
-    function ReserveTokensHolderMock(address _owner, address _crowdsale, address _token) ReserveTokensHolder(_owner, _crowdsale, _token) {}
+    function ReserveTokensHolderMock(address _owner, address _crowdsale, address _token) ReserveTokensHolder(_owner, _crowdsale, _token) public {}
 
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return mock_date;
     }
 
