@@ -28,7 +28,7 @@ contract BountiesTokensHolder is Owned {
         uint256 balance = miniMeToken.balanceOf(address(this));
 
         collectedTokens = balance;
-        assert(miniMeToken.transfer(owner, balance));
+        miniMeToken.transfer(owner, balance);
 
         TokensWithdrawn(owner, balance);
     }

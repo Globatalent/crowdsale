@@ -12,10 +12,8 @@ contract TokenContribution is Owned, TokenController {
 
     uint256 constant public maxSupply = 1000000000 ether;
 
-    uint256 constant public percentageToSale = 50;
-
     // Half of the max supply. 50% for ico
-    uint256 constant public saleLimit = (maxSupply * percentageToSale / 100);
+    uint256 constant public saleLimit = 500000000 ether;
 
     uint256 constant public maxGasPrice = 50000000000;
 

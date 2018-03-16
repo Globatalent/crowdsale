@@ -51,7 +51,7 @@ contract EarlyInvestorsTokensHolder is Owned {
         }
 
         collectedTokens = collectedTokens.add(canExtract);
-        assert(miniMeToken.transfer(owner, canExtract));
+        miniMeToken.transfer(owner, canExtract);
 
         TokensWithdrawn(owner, canExtract);
     }
