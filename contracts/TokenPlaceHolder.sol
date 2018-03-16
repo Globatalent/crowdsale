@@ -38,7 +38,6 @@ contract TokenPlaceHolder is TokenController, Owned {
     // MiniMe Controller Interface functions
     //////////
 
-    // In between the offering and the network. Default settings for allowing token transfers.
     function proxyPayment(address) public payable returns (bool) {
         return false;
     }

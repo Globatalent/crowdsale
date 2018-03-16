@@ -19,7 +19,7 @@ contract TokenContribution is Owned, TokenController {
 
     uint256 constant public maxCallFrequency = 100;
 
-    MiniMeToken public Token;
+    MiniMeToken public token;
 
     uint256 public startBlock;
     uint256 public endBlock;
@@ -36,21 +36,23 @@ contract TokenContribution is Owned, TokenController {
     uint256 public finalizedBlock;
     uint256 public finalizedTime;
 
+    uint256 public generatedTokensSale;
+
     mapping(address => uint256) public lastCallBlock;
 
     modifier initialized() {
-        require(address(Token) != 0x0);
+        require(address(token) != 0x0);
         _;
     }
 
     function TokenContribution() public {
     }
 
-    /// @notice The owner of this contract can change the controller of the DEKA token
+    /// @notice The owner of this contract can change the controller of the token
     ///  Please, be sure that the owner is a trusted agent or 0x0 address.
     /// @param _newController The address of the new controller
     function changeController(address _newController) public onlyOwner {
-        Token.changeController(_newController);
+        token.changeController(_newController);
         ControllerChanged(_newController);
     }
 
@@ -69,12 +71,12 @@ contract TokenContribution is Owned, TokenController {
         address _destTokensEarlyInvestors
     ) public onlyOwner {
         // Initialize only once
-        require(address(Token) == 0x0);
+        require(address(token) == 0x0);
 
-        Token = MiniMeToken(_token);
-        require(Token.totalSupply() == 0);
-        require(Token.controller() == address(this));
-        require(Token.decimals() == 8);
+        token = MiniMeToken(_token);
+        require(token.totalSupply() == 0);
+        require(token.controller() == address(this));
+        require(token.decimals() == 8);
 
         require(_startBlock >= getBlockNumber());
         require(_startBlock < _endBlock);
@@ -98,10 +100,6 @@ contract TokenContribution is Owned, TokenController {
 
         require(_destTokensEarlyInvestors != 0x0);
         destTokensEarlyInvestors= _destTokensEarlyInvestors;
-    }
-
-    function() public payable {
-        proxyPayment(msg.sender);
     }
 
     //////////
@@ -128,10 +126,12 @@ contract TokenContribution is Owned, TokenController {
     }
 
     function generate(address _th, uint256 _amount) public onlyOwner {
-        assert(tokensIssued() <= saleLimit);
-        assert(_amount > 0);
+        require(generatedTokensSale <= saleLimit);
+        require(_amount > 0);
 
-        assert(Token.generateTokens(_th, _amount));
+        generatedTokensSale = generatedTokensSale.add(_amount);
+        token.generateTokens(_th, _amount);
+
         NewSale(_th, _amount);
     }
 
@@ -185,7 +185,7 @@ contract TokenContribution is Owned, TokenController {
         //  bountiesTokens = ----------------------- * maxSupply
         //                      percentage(100)
         //
-        assert(Token.generateTokens(
+        assert(token.generateTokens(
                 destTokensBounties,
                 maxSupply.mul(percentageToBounties).div(percent(100))));
 
@@ -194,7 +194,7 @@ contract TokenContribution is Owned, TokenController {
         //  reserveTokens = ----------------------- * maxSupply
         //                      percentage(100)
         //
-        assert(Token.generateTokens(
+        assert(token.generateTokens(
                 destTokensReserve,
                 maxSupply.mul(percentageToReserve).div(percent(100))));
 
@@ -203,7 +203,7 @@ contract TokenContribution is Owned, TokenController {
         //  teamTokens = ----------------------- * maxSupply
         //                   percentage(100)
         //
-        assert(Token.generateTokens(
+        assert(token.generateTokens(
                 destTokensTeam,
                 maxSupply.mul(percentageToTeam).div(percent(100))));
 
@@ -212,7 +212,7 @@ contract TokenContribution is Owned, TokenController {
         //  airdropTokens = ----------------------- * maxSupply
         //                   percentage(100)
         //
-        assert(Token.generateTokens(
+        assert(token.generateTokens(
                 destTokensAirdrop,
                 maxSupply.mul(percentageToAirdrop).div(percent(100))));
 
@@ -221,7 +221,7 @@ contract TokenContribution is Owned, TokenController {
         //  advisorsTokens = ----------------------- * maxSupply
         //                      percentage(100)
         //
-        assert(Token.generateTokens(
+        assert(token.generateTokens(
                 destTokensAdvisors,
                 maxSupply.mul(percentageToAdvisors).div(percent(100))));
 
@@ -230,7 +230,7 @@ contract TokenContribution is Owned, TokenController {
         //  advisorsTokens = ------------------------------ * maxSupply
         //                          percentage(100)
         //
-        assert(Token.generateTokens(
+        assert(token.generateTokens(
                 destTokensEarlyInvestors,
                 maxSupply.mul(percentageToEarlyInvestors).div(percent(100))));
 
@@ -260,7 +260,7 @@ contract TokenContribution is Owned, TokenController {
 
     /// @return Total tokens issued in weis.
     function tokensIssued() public constant returns (uint256) {
-        return Token.totalSupply();
+        return token.totalSupply();
     }
 
 
@@ -288,17 +288,17 @@ contract TokenContribution is Owned, TokenController {
     /// @param _token The address of the token contract that you want to recover
     ///  set to 0 in case you want to extract ether.
     function claimTokens(address _token) public onlyOwner {
-        if (Token.controller() == address(this)) {
-            Token.claimTokens(_token);
+        if (token.controller() == address(this)) {
+            token.claimTokens(_token);
         }
         if (_token == 0x0) {
             owner.transfer(this.balance);
             return;
         }
 
-        ERC20Token token = ERC20Token(_token);
-        uint256 balance = token.balanceOf(this);
-        token.transfer(owner, balance);
+        ERC20Token erc20token = ERC20Token(_token);
+        uint256 balance = erc20token.balanceOf(this);
+        erc20token.transfer(owner, balance);
         ClaimedTokens(_token, owner, balance);
     }
 

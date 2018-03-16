@@ -120,7 +120,7 @@ contract("Contribution", function(accounts) {
     assert.equal(await token.controller(), tokenContribution.address);
   });
 
-  it("Moves time to start of the ICO, and does the first generate", async () => {
+  it("Moves time to start of the crowdsale, and does the first generate", async () => {
     tokenContribution.generate(addressToken, web3.toWei(1));
 
     await tokenContribution.setMockedBlockNumber(1010000);
@@ -230,10 +230,21 @@ contract("Contribution", function(accounts) {
     );
   });
 
-  it("Allows transfers after finalize", async () => {
-    await token.transfer(addressDummy1, web3.toWei(1));
+  it("Check generate after finalize", async () => {
+    tokenContribution.generate(addressToken, web3.toWei(1));
 
-    const balance2 = await token.balanceOf(addressDummy1);
+    await tokenContribution.setMockedBlockNumber(1060000);
+    await token.setMockedBlockNumber(1060000);
+
+    const balance = await token.balanceOf(addressToken);
+
+    assert.equal(web3.fromWei(balance).toNumber(), 2 * exchangeRate);
+  });
+
+  it("Allows transfers after finalize", async () => {
+    await token.transfer(addressDummy2, web3.toWei(1));
+
+    const balance2 = await token.balanceOf(addressDummy2);
 
     assert.equal(web3.fromWei(balance2).toNumber(), 1);
   });
