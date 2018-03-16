@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import '../TokenContribution.sol';
 
@@ -6,7 +6,7 @@ import '../TokenContribution.sol';
 
 contract TokenContributionMock is TokenContribution {
 
-    function TokenContributionMock() TokenContribution() {}
+    function TokenContributionMock() TokenContribution() public {}
 
     function getBlockNumber() internal constant returns (uint) {
         return mock_blockNumber;

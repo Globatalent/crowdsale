@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import "../MiniMeToken.sol";
 
@@ -13,5 +13,5 @@ contract ExternalToken is MiniMeToken {
                 1,                             // Decimals
                 "EXT",                         // Symbol
                 true                           // Enable transfers
-            ) {}
+            ) public {}
 }

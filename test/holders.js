@@ -120,13 +120,15 @@ contract("Holders", function(accounts) {
     await tokenContribution.setMockedBlockNumber(endBlock + 1);
     await tokenContribution.finalize();
 
-    await token.setMockedBlockNumber(1030000);
+    await token.setMockedBlockNumber(1100000);
   });
 
   it("Disallows team from transfering before 12 months have past", async () => {
     const t =
-      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 359;
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 340;
     await teamTokensHolder.setMockedTime(t);
+
+    await token.setMockedBlockNumber(1200000);
 
     // This function will fail in the multisig
     await assertFail(async () => {
@@ -136,11 +138,11 @@ contract("Holders", function(accounts) {
 
   it("Allows team to extract 40% after 12 months", async () => {
     const t =
-      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 361;
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 363;
     await teamTokensHolder.setMockedTime(t);
     
-    await token.setMockedBlockNumber(1040000);
-
+    await token.setMockedBlockNumber(1300000);
+    
     await teamTokensHolder.collectTokens({ from: addressTeam });
 
     const balance = await token.balanceOf(addressTeam);
@@ -175,7 +177,7 @@ contract("Holders", function(accounts) {
 
     await teamTokensHolder.collectTokens({ from: addressTeam });
 
-    await token.setMockedBlockNumber(1050000);
+    await token.setMockedBlockNumber(1400000);
 
     const balance = await token.balanceOf(addressTeam);
 
@@ -209,7 +211,7 @@ contract("Holders", function(accounts) {
 
     await teamTokensHolder.collectTokens({ from: addressTeam });
 
-    await token.setMockedBlockNumber(1060000);
+    await token.setMockedBlockNumber(1500000);
 
     const balance = await token.balanceOf(addressTeam);
 
@@ -242,7 +244,7 @@ contract("Holders", function(accounts) {
 
     await reserveTokensHolder.collectTokens({ from: addressReserve });
 
-    await token.setMockedBlockNumber(1080000);
+    await token.setMockedBlockNumber(1600000);
 
     const balance = await token.balanceOf(addressReserve);
 
@@ -276,7 +278,7 @@ contract("Holders", function(accounts) {
 
     await reserveTokensHolder.collectTokens({ from: addressReserve });
 
-    await token.setMockedBlockNumber(1100000);
+    await token.setMockedBlockNumber(1700000);
 
     const balance = await token.balanceOf(addressReserve);
     const realTokens = web3.fromWei(balance).toNumber();
@@ -306,7 +308,7 @@ contract("Holders", function(accounts) {
 
     await airdropTokensHolder.collectTokens({ from: addressAirdrop });
 
-    await token.setMockedBlockNumber(1300000);
+    await token.setMockedBlockNumber(1800000);
 
     const balance = await token.balanceOf(addressAirdrop);
 
@@ -340,7 +342,7 @@ contract("Holders", function(accounts) {
 
     await airdropTokensHolder.collectTokens({ from: addressAirdrop });
 
-    await token.setMockedBlockNumber(1500000);
+    await token.setMockedBlockNumber(1900000);
 
     const balance = await token.balanceOf(addressAirdrop);
 
@@ -374,7 +376,7 @@ contract("Holders", function(accounts) {
 
     await airdropTokensHolder.collectTokens({ from: addressAirdrop });
 
-    await token.setMockedBlockNumber(1700000);
+    await token.setMockedBlockNumber(2000000);
 
     const balance = await token.balanceOf(addressAirdrop);
 
@@ -408,7 +410,7 @@ contract("Holders", function(accounts) {
 
     await airdropTokensHolder.collectTokens({ from: addressAirdrop });
 
-    await token.setMockedBlockNumber(1900000);
+    await token.setMockedBlockNumber(2100000);
 
     const balance = await token.balanceOf(addressAirdrop);
 
@@ -441,7 +443,7 @@ contract("Holders", function(accounts) {
 
     await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
 
-    await token.setMockedBlockNumber(2000000);
+    await token.setMockedBlockNumber(2200000);
 
     const balance = await token.balanceOf(addressAdvisors);
 
@@ -474,7 +476,7 @@ contract("Holders", function(accounts) {
 
     await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
 
-    await token.setMockedBlockNumber(2100000);
+    await token.setMockedBlockNumber(2300000);
 
     const balance = await token.balanceOf(addressAdvisors);
 
@@ -508,7 +510,7 @@ contract("Holders", function(accounts) {
 
     await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
 
-    await token.setMockedBlockNumber(2200000);
+    await token.setMockedBlockNumber(2400000);
 
     const balance = await token.balanceOf(addressAdvisors);
 
@@ -542,7 +544,7 @@ contract("Holders", function(accounts) {
 
     await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
 
-    await token.setMockedBlockNumber(2300000);
+    await token.setMockedBlockNumber(2500000);
 
     const balance = await token.balanceOf(addressAdvisors);
 
@@ -576,7 +578,7 @@ contract("Holders", function(accounts) {
 
     await advisorsTokensHolder.collectTokens({ from: addressAdvisors });
 
-    await token.setMockedBlockNumber(2400000);
+    await token.setMockedBlockNumber(2600000);
 
     const balance = await token.balanceOf(addressAdvisors);
 
@@ -609,7 +611,7 @@ contract("Holders", function(accounts) {
 
     await bountiesTokensHolder.collectTokens({ from: addressBounties });
 
-    await token.setMockedBlockNumber(2500000);
+    await token.setMockedBlockNumber(2700000);
 
     const balance = await token.balanceOf(addressBounties);
 
@@ -643,7 +645,7 @@ contract("Holders", function(accounts) {
       from: addressEarlyInvestors
     });
 
-    await token.setMockedBlockNumber(2600000);
+    await token.setMockedBlockNumber(2800000);
 
     const balance = await token.balanceOf(addressEarlyInvestors);
 
@@ -679,7 +681,7 @@ contract("Holders", function(accounts) {
       from: addressEarlyInvestors
     });
 
-    await token.setMockedBlockNumber(2700000);
+    await token.setMockedBlockNumber(2900000);
 
     const balance = await token.balanceOf(addressEarlyInvestors);
 
@@ -717,7 +719,7 @@ contract("Holders", function(accounts) {
       from: addressEarlyInvestors
     });
 
-    await token.setMockedBlockNumber(2800000);
+    await token.setMockedBlockNumber(3000000);
 
     const balance = await token.balanceOf(addressEarlyInvestors);
 
@@ -755,7 +757,7 @@ contract("Holders", function(accounts) {
       from: addressEarlyInvestors
     });
 
-    await token.setMockedBlockNumber(2900000);
+    await token.setMockedBlockNumber(3100000);
 
     const balance = await token.balanceOf(addressEarlyInvestors);
 

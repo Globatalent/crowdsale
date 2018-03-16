@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import '../AdvisorsTokensHolder.sol';
 
@@ -6,9 +6,9 @@ import '../AdvisorsTokensHolder.sol';
 
 contract AdvisorsTokensHolderMock is AdvisorsTokensHolder {
 
-    function AdvisorsTokensHolderMock(address _owner, address _crowdsale, address _token) AdvisorsTokensHolder(_owner, _crowdsale, _token) {}
+    function AdvisorsTokensHolderMock(address _owner, address _crowdsale, address _token) AdvisorsTokensHolder(_owner, _crowdsale, _token) public {}
 
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return mock_date;
     }
 

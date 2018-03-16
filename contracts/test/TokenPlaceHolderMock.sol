@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import '../TokenPlaceHolder.sol';
 
@@ -9,11 +9,11 @@ contract TokenPlaceHolderMock is TokenPlaceHolder {
     uint mock_time;
 
     function TokenPlaceHolderMock(address _owner, address _token, address _contribution)
-            TokenPlaceHolder(_owner, _token, _contribution) {
+            TokenPlaceHolder(_owner, _token, _contribution) public {
         mock_time = now;
     }
 
-    function getTime() internal returns (uint) {
+    function getTime() internal view returns (uint) {
         return mock_time;
     }
 

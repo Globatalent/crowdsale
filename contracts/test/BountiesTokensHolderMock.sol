@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import '../BountiesTokensHolder.sol';
 
@@ -6,9 +6,9 @@ import '../BountiesTokensHolder.sol';
 
 contract BountiesTokensHolderMock is BountiesTokensHolder {
 
-    function BountiesTokensHolderMock(address _owner, address _crowdsale, address _token) BountiesTokensHolder(_owner, _crowdsale, _token) {}
+    function BountiesTokensHolderMock(address _owner, address _crowdsale, address _token) BountiesTokensHolder(_owner, _crowdsale, _token) public {}
 
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return mock_date;
     }
 
