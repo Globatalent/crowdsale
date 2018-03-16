@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import "./MiniMeToken.sol";
 import "./TokenContribution.sol";
@@ -13,7 +13,7 @@ contract BountiesTokensHolder is Owned {
     TokenContribution contribution;
     MiniMeToken miniMeToken;
 
-    function BountiesTokensHolder(address _owner, address _contribution, address _miniMeToken) {
+    function BountiesTokensHolder(address _owner, address _contribution, address _miniMeToken) public {
         owner = _owner;
         contribution = TokenContribution(_contribution);
         miniMeToken = MiniMeToken(_miniMeToken);
@@ -33,11 +33,11 @@ contract BountiesTokensHolder is Owned {
         TokensWithdrawn(owner, balance);
     }
 
-    function months(uint256 m) internal returns (uint256) {
+    function months(uint256 m) internal pure returns (uint256) {
         return m.mul(30 days);
     }
 
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return now;
     }
 

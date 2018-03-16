@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 
 import "./Owned.sol";
@@ -40,20 +40,12 @@ contract TokenContribution is Owned, TokenController {
 
     mapping(address => uint256) public lastCallBlock;
 
-    bool public paused;
-
     modifier initialized() {
         require(address(Token) != 0x0);
         _;
     }
 
-    modifier notPaused() {
-        require(!paused);
-        _;
-    }
-
-    function TokenContribution() {
-        paused = false;
+    function TokenContribution() public {
     }
 
     /// @notice The owner of this contract can change the controller of the DEKA token
@@ -110,9 +102,7 @@ contract TokenContribution is Owned, TokenController {
         destTokensEarlyInvestors= _destTokensEarlyInvestors;
     }
 
-    /// @notice If anybody sends Ether directly to this contract, consider he is
-    ///  getting tokens.
-    function() public payable notPaused {
+    function() public payable {
         proxyPayment(msg.sender);
     }
 
@@ -120,11 +110,7 @@ contract TokenContribution is Owned, TokenController {
     // MiniMe Controller functions
     //////////
 
-    /// @notice This method will generally be called by the Token contract to
-    ///  acquire tokens. Or directly from third parties that want to acquire tokens in
-    ///  behalf of a token holder.
-    /// @param _th Token holder where the tokens will be minted.
-    function proxyPayment(address _th) public payable returns (bool) {
+    function proxyPayment(address) public payable returns (bool) {
         return false;
     }
 
@@ -136,7 +122,7 @@ contract TokenContribution is Owned, TokenController {
         return transferable(_from);
     }
 
-    function transferable(address _from) internal returns (bool) {
+    function transferable(address _from) internal view returns (bool) {
         // Allow the exchanger to work from the beginning
         if (finalizedTime == 0) return false;
 
@@ -181,9 +167,10 @@ contract TokenContribution is Owned, TokenController {
         finalizedBlock = getBlockNumber();
         finalizedTime = now;
 
-        uint256 percentageToTeam = percent(18);
+        // Percentage to sale
+        // uint256 percentageToCommunity = percent(50);
 
-        uint256 percentageToCommunity = percent(50);
+        uint256 percentageToTeam = percent(18);
 
         uint256 percentageToReserve = percent(8);
 
@@ -252,7 +239,7 @@ contract TokenContribution is Owned, TokenController {
         Finalized();
     }
 
-    function percent(uint256 p) internal returns (uint256) {
+    function percent(uint256 p) internal pure returns (uint256) {
         return p.mul(10 ** 16);
     }
 
@@ -289,7 +276,7 @@ contract TokenContribution is Owned, TokenController {
     }
 
     /// @notice This function is overrided by the test Mocks.
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return now;
     }
 
@@ -315,17 +302,6 @@ contract TokenContribution is Owned, TokenController {
         uint256 balance = token.balanceOf(this);
         token.transfer(owner, balance);
         ClaimedTokens(_token, owner, balance);
-    }
-
-
-    /// @notice Pauses the contribution if there is any issue
-    function pauseContribution() onlyOwner {
-        paused = true;
-    }
-
-    /// @notice Resumes the contribution
-    function resumeContribution() onlyOwner {
-        paused = false;
     }
 
     event ClaimedTokens(address indexed _token, address indexed _controller, uint256 _amount);

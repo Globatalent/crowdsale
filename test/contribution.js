@@ -131,20 +131,6 @@ contract("Contribution", function(accounts) {
     assert.equal(web3.fromWei(balance).toNumber(), 1 * exchangeRate);
   });
 
-  it("Pauses and resumes the contribution", async () => {
-    await tokenContribution.setMockedBlockNumber(1020000);
-    await token.setMockedBlockNumber(1020000);
-    await tokenContribution.pauseContribution();
-    await assertFail(async () => {
-      await token.sendTransaction({
-        value: web3.toWei(5),
-        gas: 300000,
-        gasPrice: "20000000000"
-      });
-    });
-    await tokenContribution.resumeContribution();
-  });
-
   it("Check sale limit", async () => {
     await tokenContribution.setMockedBlockNumber(1030000);
     await token.setMockedBlockNumber(1030000);

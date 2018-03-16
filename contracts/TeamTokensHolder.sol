@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 /// @title TeamTokensHolder Contract
 /// @dev Unlock 40% after 12 months
@@ -18,7 +18,7 @@ contract TeamTokensHolder is Owned {
     TokenContribution crowdsale;
     MiniMeToken miniMeToken;
 
-    function TeamTokensHolder(address _owner, address _crowdsale, address _token) public{
+    function TeamTokensHolder(address _owner, address _crowdsale, address _token) public {
         owner = _owner;
         crowdsale = TokenContribution(_crowdsale);
         miniMeToken = MiniMeToken(_token);
@@ -56,11 +56,11 @@ contract TeamTokensHolder is Owned {
         TokensWithdrawn(owner, canExtract);
     }
 
-    function months(uint256 m) internal returns (uint256) {
+    function months(uint256 m) internal pure returns (uint256) {
         return m.mul(30 days);
     }
 
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return now;
     }
 

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.19;
 
 import "./MiniMeToken.sol";
 import "./TokenContribution.sol";
@@ -19,7 +19,7 @@ contract TokenPlaceHolder is TokenController, Owned {
     /// @param _token token contract address
     /// @param _contribution TokenContribution contract address
     ///  only this exchanger will be able to move tokens)
-    function TokenPlaceHolder(address _owner, address _token, address _contribution) {
+    function TokenPlaceHolder(address _owner, address _token, address _contribution) public {
         owner = _owner;
         miniMeToken = MiniMeToken(_token);
         contribution = TokenContribution(_contribution);
@@ -70,7 +70,7 @@ contract TokenPlaceHolder is TokenController, Owned {
     //////////
 
     /// @notice This function is overrided by the test Mocks.
-    function getTime() internal returns (uint256) {
+    function getTime() internal view returns (uint256) {
         return now;
     }
 
