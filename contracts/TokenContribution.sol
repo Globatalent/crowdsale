@@ -292,7 +292,7 @@ contract TokenContribution is Owned, TokenController {
             token.claimTokens(_token);
         }
         if (_token == 0x0) {
-            owner.transfer(this.balance);
+            owner.transfer(address(this).balance);
             return;
         }
 
