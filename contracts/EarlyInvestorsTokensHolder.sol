@@ -76,7 +76,7 @@ contract EarlyInvestorsTokensHolder is Owned {
     function claimTokens(address _token) public onlyOwner {
         require(_token != address(miniMeToken));
         if (_token == 0x0) {
-            owner.transfer(this.balance);
+            owner.transfer(address(this).balance);
             return;
         }
 
