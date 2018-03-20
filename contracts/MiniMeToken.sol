@@ -496,7 +496,7 @@ contract MiniMeToken is Controlled {
     ///  set to 0 in case you want to extract ether.
     function claimTokens(address _token) public onlyController {
         if (_token == 0x0) {
-            controller.transfer(this.balance);
+            controller.transfer(address(this).balance);
             return;
         }
 
