@@ -10,9 +10,9 @@ import "./ERC20Token.sol";
 contract ReserveTokensHolder is Owned {
     using SafeMath for uint256;
 
-    uint256 collectedTokens;
-    TokenContribution crowdsale;
-    MiniMeToken miniMeToken;
+    uint256 public collectedTokens;
+    TokenContribution public crowdsale;
+    MiniMeToken public miniMeToken;
 
     function ReserveTokensHolder(address _owner, address _crowdsale, address _miniMeToken) public {
         owner = _owner;
