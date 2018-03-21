@@ -9,9 +9,9 @@ import "./ERC20Token.sol";
 contract BountiesTokensHolder is Owned {
     using SafeMath for uint256;
 
-    uint256 collectedTokens;
-    TokenContribution contribution;
-    MiniMeToken miniMeToken;
+    uint256 public collectedTokens;
+    TokenContribution public contribution;
+    MiniMeToken public miniMeToken;
 
     function BountiesTokensHolder(address _owner, address _contribution, address _miniMeToken) public {
         owner = _owner;
