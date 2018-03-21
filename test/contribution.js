@@ -120,11 +120,23 @@ contract("Contribution", function(accounts) {
     assert.equal(await token.controller(), tokenContribution.address);
   });
 
+  it("Check generate limit", async () => {
+    await tokenContribution.setMockedBlockNumber(1010000);
+    await token.setMockedBlockNumber(1010000);
+
+    await assertFail(async () => {
+      tokenContribution.generate(
+        addressToken,
+        web3.toWei(tokenContribution.saleLimit) + 1
+      );
+    });
+  });
+
   it("Moves time to start of the crowdsale, and does the first generate", async () => {
     tokenContribution.generate(addressToken, web3.toWei(1));
 
-    await tokenContribution.setMockedBlockNumber(1010000);
-    await token.setMockedBlockNumber(1010000);
+    await tokenContribution.setMockedBlockNumber(1015000);
+    await token.setMockedBlockNumber(1015000);
 
     const balance = await token.balanceOf(addressToken);
 
