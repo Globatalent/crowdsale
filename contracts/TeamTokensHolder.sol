@@ -14,9 +14,9 @@ import "./ERC20Token.sol";
 contract TeamTokensHolder is Owned {
     using SafeMath for uint256;
 
-    uint256 collectedTokens;
-    TokenContribution crowdsale;
-    MiniMeToken miniMeToken;
+    uint256 public collectedTokens;
+    TokenContribution public crowdsale;
+    MiniMeToken public miniMeToken;
 
     function TeamTokensHolder(address _owner, address _crowdsale, address _token) public {
         owner = _owner;
