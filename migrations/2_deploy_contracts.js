@@ -12,7 +12,7 @@ const ReserveTokensHolder = artifacts.require("ReserveTokensHolder");
 const TokenPlaceHolder = artifacts.require("TokenPlaceHolderMock");
 
 // All of these constants need to be configured before deploy
-const addressMainOwner = "0x128a906fbfd8497f0adc03d523d656ef16dfdff6";
+const addressMainOwner = "0xE07c39C7aC020047535020579f01E510321FCD4A";
 
 const addressesReserve = addressMainOwner;
 
@@ -25,9 +25,6 @@ const addressesAirdrop = addressMainOwner;
 const addressesAdvisors = addressMainOwner;
 
 const addressesEarlyInvestors = addressMainOwner;
-
-const startBlock = 1941920;
-const endBlock = 1942000;
 
 module.exports = async function(deployer, network, accounts) {
   //if (network === "development") return;  // Don't deploy on tests
@@ -136,9 +133,6 @@ module.exports = async function(deployer, network, accounts) {
   // Token Contribution initialize send/wait
   await tokenContribution.initialize(
     token.address,
-
-    startBlock,
-    endBlock,
 
     reserveTokensHolder.address,
     teamTokensHolder.address,

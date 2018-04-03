@@ -10,19 +10,16 @@ import "./ERC20Token.sol";
 contract TokenContribution is Owned, TokenController {
     using SafeMath for uint256;
 
-    uint256 constant public maxSupply = 1000000000 ether;
+    uint256 constant public maxSupply = 10000000 * 10**8;
 
     // Half of the max supply. 50% for ico
-    uint256 constant public saleLimit = 500000000 ether;
+    uint256 constant public saleLimit = 5000000 * 10**8;
 
     uint256 constant public maxGasPrice = 50000000000;
 
     uint256 constant public maxCallFrequency = 100;
 
     MiniMeToken public token;
-
-    uint256 public startBlock;
-    uint256 public endBlock;
 
     address public destTokensTeam;
     address public destTokensReserve;
@@ -61,8 +58,6 @@ contract TokenContribution is Owned, TokenController {
     ///  period starts This initializes most of the parameters
     function initialize(
         address _token,
-        uint256 _startBlock,
-        uint256 _endBlock,
         address _destTokensReserve,
         address _destTokensTeam,
         address _destTokensBounties,
@@ -77,11 +72,6 @@ contract TokenContribution is Owned, TokenController {
         require(token.totalSupply() == 0);
         require(token.controller() == address(this));
         require(token.decimals() == 8);
-
-        require(_startBlock >= getBlockNumber());
-        require(_startBlock < _endBlock);
-        startBlock = _startBlock;
-        endBlock = _endBlock;
 
         require(_destTokensReserve != 0x0);
         destTokensReserve = _destTokensReserve;
@@ -126,7 +116,7 @@ contract TokenContribution is Owned, TokenController {
     }
 
     function generate(address _th, uint256 _amount) public onlyOwner {
-        require(generatedTokensSale <= saleLimit);
+        require(generatedTokensSale.add(_amount) <= saleLimit);
         require(_amount > 0);
 
         generatedTokensSale = generatedTokensSale.add(_amount);
@@ -158,8 +148,6 @@ contract TokenContribution is Owned, TokenController {
     ///  by creating the remaining tokens and transferring the controller to the configured
     ///  controller.
     function finalize() public initialized {
-        require(getBlockNumber() >= startBlock);
-        require(msg.sender == owner || getBlockNumber() > endBlock);
         require(finalizedBlock == 0);
 
         finalizedBlock = getBlockNumber();
