@@ -14,6 +14,8 @@ const AirdropTokensHolder = artifacts.require("AirdropTokensHolderMock");
 const TokenPlaceHolderClass = artifacts.require("TokenPlaceHolderMock");
 
 const assertFail = require("./helpers/assertFail");
+const toUnit = require("./helpers/toUnit.js");
+const fromUnit = require("./helpers/fromUnit.js");
 const BigNumber = require("bignumber.js");
 
 contract("Contribution", function(accounts) {
@@ -41,10 +43,8 @@ contract("Contribution", function(accounts) {
   let earlyInvestorsTokensHolder;
   let tokenPlaceHolder;
 
-  const startBlock = 1000000;
-  const endBlock = 1040000;
-
-  const maxSupply = new BigNumber("1e9"); // 6 billions in ethers
+  const maxSupply = new BigNumber("1e7"); // 10 millions
+  const amountToSale = new BigNumber("5e6"); // 5 millions
   const percentToSale = 50; // Percentage of coins for the ico
 
   const totalSupplyWithoutSale = maxSupply.mul(percentToSale).div(100);
@@ -104,9 +104,6 @@ contract("Contribution", function(accounts) {
     await tokenContribution.initialize(
       token.address,
 
-      startBlock,
-      endBlock,
-
       reserveTokensHolder.address,
       teamTokensHolder.address,
       bountiesTokensHolder.address,
@@ -120,70 +117,44 @@ contract("Contribution", function(accounts) {
     assert.equal(await token.controller(), tokenContribution.address);
   });
 
-  it("Check generate limit", async () => {
-    await tokenContribution.setMockedBlockNumber(1010000);
-    await token.setMockedBlockNumber(1010000);
-
-    await assertFail(async () => {
-      tokenContribution.generate(
-        addressToken,
-        web3.toWei(tokenContribution.saleLimit) + 1
-      );
-    });
-  });
-
   it("Moves time to start of the crowdsale, and does the first generate", async () => {
-    tokenContribution.generate(addressToken, web3.toWei(1));
+    tokenContribution.generate(addressToken, toUnit(1, 8));
 
     await tokenContribution.setMockedBlockNumber(1015000);
     await token.setMockedBlockNumber(1015000);
 
     const balance = await token.balanceOf(addressToken);
 
-    assert.equal(web3.fromWei(balance).toNumber(), 1 * exchangeRate);
-  });
-
-  it("Check sale limit", async () => {
-    await tokenContribution.setMockedBlockNumber(1030000);
-    await token.setMockedBlockNumber(1030000);
-
-    await assertFail(async () => {
-      await tokenContribution.generate(
-        addressToken,
-        web3.toWei(tokenContribution.tokensIssued())
-      );
-    });
+    assert.equal(fromUnit(balance, 8).toNumber(), 1 * exchangeRate);
   });
 
   it("Doesn't allow transfers after the finalize", async () => {
     await assertFail(async () => {
-      await token.transfer(addressToken, web3.toWei(1));
+      await token.transfer(addressToken, toUnit(1, 8));
     });
   });
 
   it("Finalizes", async () => {
     const tokensIssuedPreFinalize = await tokenContribution.tokensIssued();
 
-    await tokenContribution.setMockedBlockNumber(endBlock + 1);
     await tokenContribution.finalize();
 
     const currentSupply = totalSupplyWithoutSale.add(
-      web3.fromWei(tokensIssuedPreFinalize)
+      fromUnit(tokensIssuedPreFinalize, 8)
     );
 
     const tokensIssued = await tokenContribution.tokensIssued();
 
     assert.equal(
       tokensIssued.toNumber(),
-      web3.toWei(currentSupply).toNumber(),
+      toUnit(currentSupply, 8).toNumber(),
       "total supply"
     );
 
     const balanceTeam = await token.balanceOf(teamTokensHolder.address);
     assert.equal(
       balanceTeam.toNumber(),
-      web3
-        .toWei(maxSupply)
+      toUnit(maxSupply, 8)
         .mul(0.18)
         .toNumber(),
       "team"
@@ -192,8 +163,7 @@ contract("Contribution", function(accounts) {
     const balanceReserve = await token.balanceOf(reserveTokensHolder.address);
     assert.equal(
       balanceReserve.toNumber(),
-      web3
-        .toWei(maxSupply)
+      toUnit(maxSupply, 8)
         .mul(0.08)
         .toNumber(),
       "reserve"
@@ -202,8 +172,7 @@ contract("Contribution", function(accounts) {
     const balanceBounties = await token.balanceOf(bountiesTokensHolder.address);
     assert.equal(
       balanceBounties.toNumber(),
-      web3
-        .toWei(maxSupply)
+      toUnit(maxSupply, 8)
         .mul(0.13)
         .toNumber(),
       "bounties"
@@ -212,8 +181,7 @@ contract("Contribution", function(accounts) {
     const balanceAirdrop = await token.balanceOf(airdropTokensHolder.address);
     assert.equal(
       balanceAirdrop.toNumber(),
-      web3
-        .toWei(maxSupply)
+      toUnit(maxSupply, 8)
         .mul(0.02)
         .toNumber(),
       "airdrop"
@@ -222,8 +190,7 @@ contract("Contribution", function(accounts) {
     const balanceAdvisors = await token.balanceOf(advisorsTokensHolder.address);
     assert.equal(
       balanceAdvisors.toNumber(),
-      web3
-        .toWei(maxSupply)
+      toUnit(maxSupply, 8)
         .mul(0.07)
         .toNumber(),
       "advisors"
@@ -234,8 +201,7 @@ contract("Contribution", function(accounts) {
     );
     assert.equal(
       balanceEarlyInvestors.toNumber(),
-      web3
-        .toWei(maxSupply)
+      toUnit(maxSupply, 8)
         .mul(0.02)
         .toNumber(),
       "early investors"
@@ -243,22 +209,37 @@ contract("Contribution", function(accounts) {
   });
 
   it("Check generate after finalize", async () => {
-    tokenContribution.generate(addressToken, web3.toWei(1));
+    tokenContribution.generate(addressToken, toUnit(1, 8));
 
     await tokenContribution.setMockedBlockNumber(1060000);
     await token.setMockedBlockNumber(1060000);
 
     const balance = await token.balanceOf(addressToken);
 
-    assert.equal(web3.fromWei(balance).toNumber(), 2 * exchangeRate);
+    assert.equal(fromUnit(balance, 8).toNumber(), 2 * exchangeRate);
   });
 
   it("Allows transfers after finalize", async () => {
-    await token.transfer(addressDummy2, web3.toWei(1));
+    await token.transfer(addressDummy2, toUnit(1, 8));
 
     const balance2 = await token.balanceOf(addressDummy2);
 
-    assert.equal(web3.fromWei(balance2).toNumber(), 1);
+    assert.equal(fromUnit(balance2, 8).toNumber(), 1);
+  });
+
+  it("Check sale limit", async () => {
+    await tokenContribution.setMockedBlockNumber(1070000);
+    await token.setMockedBlockNumber(1070000);
+
+    let tokensIssued = await tokenContribution.tokensIssued();
+
+    let remaining = maxSupply.sub(fromUnit(tokensIssued, 8));
+
+    await tokenContribution.generate(addressToken, toUnit(remaining.toNumber(), 8));
+
+    await assertFail(async () => {
+      await tokenContribution.generate(addressToken, toUnit(1, 8));
+    });
   });
 
   it("Checks that Token's Controller is upgradeable", async () => {
