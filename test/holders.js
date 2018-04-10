@@ -14,6 +14,8 @@ const AirdropTokensHolder = artifacts.require("AirdropTokensHolderMock");
 const TokenPlaceHolderClass = artifacts.require("TokenPlaceHolderMock");
 
 const assertFail = require("./helpers/assertFail");
+const toUnit = require("./helpers/toUnit.js");
+const fromUnit = require("./helpers/fromUnit.js");
 const BigNumber = require("bignumber.js");
 
 contract("Holders", function(accounts) {
@@ -41,10 +43,7 @@ contract("Holders", function(accounts) {
   let earlyInvestorsTokensHolder;
   let tokenPlaceHolder;
 
-  const startBlock = 1000000;
-  const endBlock = 1030000;
-
-  const maxSupply = new BigNumber("1e9"); // 6 billions in ethers
+  const maxSupply = new BigNumber("1e7"); // 10 millions
   const percentToSale = 50; // Percentage of coins for the ico
 
   const totalSupplyWithoutSale = maxSupply.mul(percentToSale).div(100);
@@ -104,9 +103,6 @@ contract("Holders", function(accounts) {
     await tokenContribution.initialize(
       token.address,
 
-      startBlock,
-      endBlock,
-
       reserveTokensHolder.address,
       teamTokensHolder.address,
       bountiesTokensHolder.address,
@@ -117,7 +113,6 @@ contract("Holders", function(accounts) {
   });
 
   it("Finalizes", async () => {
-    await tokenContribution.setMockedBlockNumber(endBlock + 1);
     await tokenContribution.finalize();
 
     await token.setMockedBlockNumber(1100000);
@@ -138,7 +133,7 @@ contract("Holders", function(accounts) {
 
   it("Allows team to extract 40% after 12 months", async () => {
     const t =
-      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 363;
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 366;
     await teamTokensHolder.setMockedTime(t);
     
     await token.setMockedBlockNumber(1300000);
@@ -151,7 +146,7 @@ contract("Holders", function(accounts) {
       .mul(0.18)
       .mul(0.4)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -185,7 +180,7 @@ contract("Holders", function(accounts) {
       .mul(0.18)
       .mul(0.8)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -219,7 +214,7 @@ contract("Holders", function(accounts) {
       .mul(0.18)
       .mul(1)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens tokens exists
     assert(calcTokens > 0);
@@ -252,7 +247,7 @@ contract("Holders", function(accounts) {
       .mul(0.08)
       .mul(0.5)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -281,7 +276,7 @@ contract("Holders", function(accounts) {
     await token.setMockedBlockNumber(1700000);
 
     const balance = await token.balanceOf(addressReserve);
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     const calcTokens = maxSupply.mul(0.08).toNumber();
 
@@ -316,7 +311,7 @@ contract("Holders", function(accounts) {
       .mul(0.02)
       .mul(0.25)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -350,7 +345,7 @@ contract("Holders", function(accounts) {
       .mul(0.02)
       .mul(0.5)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -384,7 +379,7 @@ contract("Holders", function(accounts) {
       .mul(0.02)
       .mul(0.75)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -418,7 +413,7 @@ contract("Holders", function(accounts) {
       .mul(0.02)
       .mul(1)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens tokens exists
     assert(calcTokens > 0);
@@ -451,7 +446,7 @@ contract("Holders", function(accounts) {
       .mul(0.07)
       .mul(0.2)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -484,7 +479,7 @@ contract("Holders", function(accounts) {
       .mul(0.07)
       .mul(0.4)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -518,7 +513,7 @@ contract("Holders", function(accounts) {
       .mul(0.07)
       .mul(0.6)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -552,7 +547,7 @@ contract("Holders", function(accounts) {
       .mul(0.07)
       .mul(0.8)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -586,7 +581,7 @@ contract("Holders", function(accounts) {
       .mul(0.07)
       .mul(1)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens tokens exists
     assert(calcTokens > 0);
@@ -616,7 +611,7 @@ contract("Holders", function(accounts) {
     const balance = await token.balanceOf(addressBounties);
 
     const calcTokens = maxSupply.mul(0.13).toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -653,7 +648,7 @@ contract("Holders", function(accounts) {
       .mul(0.02)
       .mul(0.4)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -689,7 +684,7 @@ contract("Holders", function(accounts) {
       .mul(0.02)
       .mul(0.6)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -727,7 +722,7 @@ contract("Holders", function(accounts) {
       .mul(0.02)
       .mul(0.8)
       .toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens exists
     assert(calcTokens > 0);
@@ -762,7 +757,7 @@ contract("Holders", function(accounts) {
     const balance = await token.balanceOf(addressEarlyInvestors);
 
     const calcTokens = maxSupply.mul(0.02).toNumber();
-    const realTokens = web3.fromWei(balance).toNumber();
+    const realTokens = fromUnit(balance, 8).toNumber();
 
     // Check that tokens tokens exists
     assert(calcTokens > 0);
