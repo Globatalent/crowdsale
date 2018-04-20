@@ -43,8 +43,8 @@ contract("Contribution", function(accounts) {
   let earlyInvestorsTokensHolder;
   let tokenPlaceHolder;
 
-  const maxSupply = new BigNumber("1e7"); // 10 millions
-  const amountToSale = new BigNumber("5e6"); // 5 millions
+  const maxSupply = new BigNumber("1e9"); // 1000 millions
+  const amountToSale = new BigNumber("5e8"); // 500 millions
   const percentToSale = 50; // Percentage of coins for the ico
 
   const totalSupplyWithoutSale = maxSupply.mul(percentToSale).div(100);
@@ -131,6 +131,12 @@ contract("Contribution", function(accounts) {
   it("Doesn't allow transfers after the finalize", async () => {
     await assertFail(async () => {
       await token.transfer(addressToken, toUnit(1, 8));
+    });
+  });
+
+  it("Try to call finalize from another address that is not owner", async () => {
+    await assertFail(async () => {
+      await tokenContribution.finalize({ from: addressCommunity });
     });
   });
 
@@ -235,7 +241,10 @@ contract("Contribution", function(accounts) {
 
     let remaining = maxSupply.sub(fromUnit(tokensIssued, 8));
 
-    await tokenContribution.generate(addressToken, toUnit(remaining.toNumber(), 8));
+    await tokenContribution.generate(
+      addressToken,
+      toUnit(remaining.toNumber(), 8)
+    );
 
     await assertFail(async () => {
       await tokenContribution.generate(addressToken, toUnit(1, 8));
