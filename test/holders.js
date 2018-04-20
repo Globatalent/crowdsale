@@ -1,5 +1,4 @@
 // Simulate a full contribution
-
 const MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
 const Token = artifacts.require("TokenMock");
 const TokenContributionClass = artifacts.require("TokenContributionMock");
@@ -43,7 +42,7 @@ contract("Holders", function(accounts) {
   let earlyInvestorsTokensHolder;
   let tokenPlaceHolder;
 
-  const maxSupply = new BigNumber("1e7"); // 10 millions
+  const maxSupply = new BigNumber("1e9"); // 1000 millions
   const percentToSale = 50; // Percentage of coins for the ico
 
   const totalSupplyWithoutSale = maxSupply.mul(percentToSale).div(100);
@@ -157,7 +156,7 @@ contract("Holders", function(accounts) {
 
   it("Disallow to extract from 40% from team again", async () => {
     const t =
-      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 361;
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 366;
     await teamTokensHolder.setMockedTime(t);
 
     await assertFail(async () => {
@@ -167,7 +166,7 @@ contract("Holders", function(accounts) {
 
   it("Allows team to extract 80% after 24 months", async () => {
     const t =
-      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 721;
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 731;
     await teamTokensHolder.setMockedTime(t);
 
     await teamTokensHolder.collectTokens({ from: addressTeam });
@@ -191,7 +190,7 @@ contract("Holders", function(accounts) {
 
   it("Disallow to extract from 80% from team again", async () => {
     const t =
-      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 721;
+      (await tokenContribution.finalizedTime()).toNumber() + 86400 * 731;
     await teamTokensHolder.setMockedTime(t);
 
     await assertFail(async () => {

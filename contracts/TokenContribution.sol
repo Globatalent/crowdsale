@@ -10,10 +10,10 @@ import "./ERC20Token.sol";
 contract TokenContribution is Owned, TokenController {
     using SafeMath for uint256;
 
-    uint256 constant public maxSupply = 10000000 * 10**8;
+    uint256 constant public maxSupply = 1000000000 * 10**8;
 
     // Half of the max supply. 50% for ico
-    uint256 constant public saleLimit = 5000000 * 10**8;
+    uint256 constant public saleLimit = 500000000 * 10**8;
 
     uint256 constant public maxGasPrice = 50000000000;
 
