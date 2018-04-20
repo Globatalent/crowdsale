@@ -9,7 +9,6 @@ const EarlyInvestorsTokensHolder = artifacts.require(
   "EarlyInvestorsTokensHolder"
 );
 const ReserveTokensHolder = artifacts.require("ReserveTokensHolder");
-const TokenPlaceHolder = artifacts.require("TokenPlaceHolderMock");
 
 // All of these constants need to be configured before deploy
 const addressMainOwner = "0xE07c39C7aC020047535020579f01E510321FCD4A";
@@ -26,121 +25,94 @@ const addressesAdvisors = addressMainOwner;
 
 const addressesEarlyInvestors = addressMainOwner;
 
-module.exports = async function(deployer, network, accounts) {
+module.exports = function(deployer, network, accounts) {
   //if (network === "development") return;  // Don't deploy on tests
   console.log("Start migrating: ");
 
   // MiniMeTokenFactory send
-  let miniMeTokenFactoryFuture = MiniMeTokenFactory.new();
+  return deployer
+    .deploy(MiniMeTokenFactory)
+    .then(() => {
+      return deployer
+        .deploy(Token, MiniMeTokenFactory.address)
+        .then(() => {
+          return deployer.deploy(TokenContribution);
+        })
+        .then(() => {
+          return Token.deployed();
+        })
+        .then(tokenInstance => {
+          return tokenInstance.generateTokens("0x0", 1).then(() => {
+            return tokenInstance.destroyTokens("0x0", 1).then(() => {
+              return tokenInstance.changeController(TokenContribution.address);
+            });
+          });
+        })
+        .then(() => {
+          return deployer.deploy(
+            TeamTokensHolder,
+            addressMainOwner,
+            TokenContribution.address,
+            Token.address
+          );
+        })
+        .then(() => {
+          return deployer.deploy(
+            ReserveTokensHolder,
+            addressMainOwner,
+            TokenContribution.address,
+            Token.address
+          );
+        })
+        .then(() => {
+          return deployer.deploy(
+            BountiesTokensHolder,
+            addressMainOwner,
+            TokenContribution.address,
+            Token.address
+          );
+        })
+        .then(() => {
+          return deployer.deploy(
+            AirdropTokensHolder,
+            addressMainOwner,
+            TokenContribution.address,
+            Token.address
+          );
+        })
+        .then(() => {
+          return deployer.deploy(
+            AdvisorsTokensHolder,
+            addressMainOwner,
+            TokenContribution.address,
+            Token.address
+          );
+        })
+        .then(() => {
+          return deployer.deploy(
+            EarlyInvestorsTokensHolder,
+            addressMainOwner,
+            TokenContribution.address,
+            Token.address
+          );
+        })
+        .then(() => {
+          return TokenContribution.deployed();
+        })
+        .then(tokenContributionInstance => {
+          return tokenContributionInstance.initialize(
+            Token.address,
 
-  // MiniMeTokenFactory wait
-  let miniMeTokenFactory = await miniMeTokenFactoryFuture;
-  console.log("MiniMeTokenFactory: " + miniMeTokenFactory.address + "\n");
-
-  let tokenFuture = Token.new(miniMeTokenFactory.address);
-
-  let tokenCrowdsaleFuture = TokenContribution.new();
-
-  // Token wait
-  let token = await tokenFuture;
-  console.log("Token: " + token.address);
-
-  // Contribution wait
-  let tokenContribution = await tokenCrowdsaleFuture;
-  console.log("Token contribution: " + tokenContribution.address + "\n");
-
-  // Token initialize checkpoints for 0th TX gas savings
-  await token.generateTokens("0x0", 1);
-  await token.destroyTokens("0x0", 1);
-
-  // Change controller
-  await token.changeController(tokenContribution.address);
-
-  // TeamTokensHolder send
-  let teamTokensHolderFuture = TeamTokensHolder.new(
-    addressMainOwner,
-    tokenContribution.address,
-    token.address
-  );
-
-  // ReserveTokensHolder send
-  let reserveTokensHolderFuture = ReserveTokensHolder.new(
-    addressMainOwner,
-    tokenContribution.address,
-    token.address
-  );
-
-  // BountiesTokensHolder send
-  let bountiesTokensHolderFuture = BountiesTokensHolder.new(
-    addressMainOwner,
-    tokenContribution.address,
-    token.address
-  );
-
-  // AirdropTokensHolder send
-  let airdropTokensHolderFuture = AirdropTokensHolder.new(
-    addressMainOwner,
-    tokenContribution.address,
-    token.address
-  );
-
-  // EarlyInvestorsTokensHolder send
-  let advisorsTokensHolderFuture = AdvisorsTokensHolder.new(
-    addressMainOwner,
-    tokenContribution.address,
-    token.address
-  );
-
-  // AdvisorsTokensHolder send
-  let earlyInvestorsTokensHolderFuture = EarlyInvestorsTokensHolder.new(
-    addressMainOwner,
-    tokenContribution.address,
-    token.address
-  );
-
-  // Waits and logs
-  let teamTokensHolder = await teamTokensHolderFuture;
-  console.log("TeamTokensHolder: " + teamTokensHolder.address + "\n");
-
-  let reserveTokensHolder = await reserveTokensHolderFuture;
-  console.log("ReserveTokensHolder: " + reserveTokensHolder.address + "\n");
-
-  let bountiesTokensHolder = await bountiesTokensHolderFuture;
-  console.log("BountiesTokensHolder: " + bountiesTokensHolder.address + "\n");
-
-  let airdropTokensHolder = await airdropTokensHolderFuture;
-  console.log("AirdropTokensHolder: " + airdropTokensHolder.address + "\n");
-
-  let advisorsTokensHolder = await advisorsTokensHolderFuture;
-  console.log("AdvisorsTokensHolder: " + advisorsTokensHolder.address + "\n");
-
-  let earlyInvestorsTokensHolder = await earlyInvestorsTokensHolderFuture;
-  console.log(
-    "EarlyInvestorsTokensHolder: " + earlyInvestorsTokensHolder.address + "\n"
-  );
-
-  // TokenPlaceHolder send
-  let tokenPlaceHolderFuture = TokenPlaceHolder.new(
-    addressMainOwner,
-    token.address,
-    tokenContribution.address
-  );
-
-  // Token placeholder wait
-  let placeHolder = await tokenPlaceHolderFuture;
-  console.log("Token placeholder: " + placeHolder.address + "\n");
-
-  // Token Contribution initialize send/wait
-  await tokenContribution.initialize(
-    token.address,
-
-    reserveTokensHolder.address,
-    teamTokensHolder.address,
-    bountiesTokensHolder.address,
-    airdropTokensHolder.address,
-    advisorsTokensHolder.address,
-    earlyInvestorsTokensHolder.address
-  );
-
-  console.log("Token crowdsale initialized! \n");
+            ReserveTokensHolder.address,
+            TeamTokensHolder.address,
+            BountiesTokensHolder.address,
+            AirdropTokensHolder.address,
+            AdvisorsTokensHolder.address,
+            EarlyInvestorsTokensHolder.address
+          );
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
