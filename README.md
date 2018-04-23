@@ -1,3 +1,5 @@
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/Globatalent-logo-vert.png" width="450">
+
 # crowdsale
 
 Ethereum contracts for the globatalent crowdsale platform.
@@ -9,12 +11,18 @@ ERC20-compliant token, derived from the [MiniMe Token](https://github.com/Giveth
 ### Utilities
 #### [Controlled.sol](/contracts/Controlled.sol)
 This contract provides useful methods to establish the address that can call functions of another contract.
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/Controlled.png">
+
 - `onlyController()` [L6]: Checks that the address calling the function equals the controller address.
 - `controller` [L8]: Controller address.
 - `Controlled()` [L10]: Contract constructor. Sets controller variable to the address that creates the contract.
 - `changeController(newController)` [L14-L16]: The actual controller can call this function to change controller to newController.
 
 #### [Owned.sol](/contracts/Owned.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/Owned.png">
+
 - `onlyOwner()` [L10]: Checks that the address calling the function equals owner address.
 - `owner` [L15]: Owner address.
 - `Owned()` [L19]: Contract constructor. Sets owner variable to to the address that creates the contract.
@@ -23,6 +31,9 @@ This contract provides useful methods to establish the address that can call fun
 - `acceptOwnership()` [L32-L36]: If there is a new owner and calls this function the new owner is accepted as the owner of the contract.
 
 #### [SafeMath.sol](/contracts/SafeMath.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/SafeMath.png">
+
 - `mul(a, b)` [L8-12]: Multiplies two numbers checking for overflows.
 - `div(a, b)` [L14-19]: Divides two numbers checking for overflows and zero divisions.
 - `sub(a, b)` [L21-24]: Does a subtraction checking a is greater or equal than b.
@@ -36,6 +47,9 @@ This contract provides useful methods to establish the address that can call fun
 
 #### [ERC20Token.sol](/contracts/ERC20Token.sol)
 Interface for ERC20 compatible tokens.
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/ERC20Token.png">
+
 - `totalSupply` [L16]: Variable that contains the total supply of the token.
 - `balanceOf(owner)` [L20]: Returns the token balance of owner.
 - `transfer(to, value)` [L26]: Transfers value amount of tokens from your account to to account.
@@ -46,6 +60,9 @@ Interface for ERC20 compatible tokens.
 
 #### [TokenController.sol](/contracts/TokenController.sol)
 Our token contract allows a token controller, this way we can upgrade functionality and modify behaviour.
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/TokenController.png">
+
 - `proxyPayment(owner)` [L8]: Method to call sending ether to purchase tokens.
 - `onTransfer(from, to, amount)` [L16]: Method called when transferring tokens, let’s us control when tokens can start to be tradable.
 - `onApprove(owner, spender, amount)` [L24]: Method called when someone approves another person to spend tokens from his account.
@@ -54,6 +71,8 @@ Our token contract allows a token controller, this way we can upgrade functional
 Inherits from: Controlled.
 
 MiniMe token follows the ERC20 standard and implements all the functions described on ERC20Token.sol but since more logic is required by this token it breaks ERC20 functions into more than one method.
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/MiniMeToken.png">
 
 - `name` [L40]: Name of the token.
 - `decimals` [L41]: Decimals of the token.
