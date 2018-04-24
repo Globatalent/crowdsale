@@ -24,7 +24,7 @@ This contract provides useful methods to establish the address that can call fun
 
 - `onlyOwner()` [L10]: Checks that the address calling the function equals the owner address.
 - `owner` [L15]: Owner address.
-- `Owned()` [L19]: Contract constructor. Sets owner variable to to the address that creates the contract.
+- `Owned()` [L19]: Contract constructor. Sets owner variable to the address that creates the contract.
 - `newOwner` [L22]: Address of the new owner.
 - `changeOwner(newOwner)` [L27-29]: Old owner can call this function to set a newOwner.
 - `acceptOwnership()` [L32-L36]: If there is a new owner and calls this function the new owner is accepted as the owner of the contract.
