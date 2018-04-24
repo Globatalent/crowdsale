@@ -149,6 +149,6 @@ Uses SafeMath for uint256 operations.
 - `claimTokens(token)`: This method can be used by the controller to extract mistakenly sent tokens to this contract.
 - `Events`: Events used by the contract to emit values.
 
-## Instructions
+## Test and deploy
 
 See [INSTRUCTIONS.md](/INSTRUCTIONS.md) for instructions on how to test and deploy the contracts.
