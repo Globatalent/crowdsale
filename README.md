@@ -119,7 +119,7 @@ This creates an instance of MiniMeToken with the desired parameters to customize
 ### Contribution
 
 #### [TokenContribution.sol](/contracts/TokenContribution.sol)
-Inherits from: Owned, TokenController.
+Inherits from: [Owned.sol](/contracts/Owned.sol), [TokenController](/contracts/TokenController.sol). Uses [SafeMath](/contracts/SafeMath.sol) for uint256 operations.
 
 This is the contract where the contribution takes place. The first part of the contract declares the variables where the address of the holders will be stored, token, sets the sale limit and the max supply of the token.
 
