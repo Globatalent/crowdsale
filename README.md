@@ -89,6 +89,8 @@ MiniMe token follows the ERC20 standard and implements all the functions describ
 - `tokenFactory` [L84]: Factory used to create new clone tokens.
 - `MiniMeToken(tokenFactory, parentToken, parentSnapShotBlock, tokenName, decimalUnits, tokenSymbol, transfersEnabled)` [L103]: Contract constructor.
 
+See [MINIME_README.md](/MINIME_README.md) for more information.
+
 **[ERC20 methods]**
 
 - `doTransfer` [L167]: Actual transfer function in this contract. Inside it balances are checked, the TokenController is warned that a transfer has been done and it checks that transfers are enabled.
