@@ -161,25 +161,40 @@ Uses SafeMath for uint256 operations.
 
 #### [AdvisorsTokensHolder.sol](/contracts/AdvisorsTokensHolder.sol)
 
+**[TokenHolder methods]**
+- `collectTokens()`: **[TokenHolder functionality]** - 
+
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/AdvisorsTokensHolder.png">
 
 #### [AirdropTokensHolder.sol](/contracts/AirdropTokensHolder.sol)
+**[TokenHolder methods]**
+- `collectTokens()`: **[TokenHolder functionality]** -  Unlock 25% tokens every
+3 months from ICO date.
 
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/AirdropTokensHolder.png">
 
 #### [BountiesTokensHolder.sol](/contracts/BountiesTokensHolder.sol)
+**[TokenHolder methods]**
+- `collectTokens()`: **[TokenHolder functionality]** - No lock-up.
 
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/BountiesTokensHolder.png">
 
 #### [EarlyInvestorsTokensHolder.sol](/contracts/EarlyInvestorsTokensHolder.sol)
+**[TokenHolder methods]**
+- `collectTokens()`: **[TokenHolder functionality]** - Unlock 40% 1 day after Token Launch;
+Then unlock 20% every 3 months.
 
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/EarlyInvestorsTokensHolder.png">
 
 #### [ReserveTokensHolder.sol](/contracts/ReserveTokensHolder.sol)
+**[TokenHolder methods]**
+- `collectTokens()`: **[TokenHolder functionality]** - Unlock 50% after 18 months; 100% after 36 months.
 
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/ReserveTokensHolder.png">
 
 #### [TeamTokensHolder.sol](/contracts/TeamTokensHolder.sol)
+**[TokenHolder methods]**
+- `collectTokens()`: **[TokenHolder functionality]** - Unlock 40% after 12 months; Unlock 80% after 24 months; Unlock 100% after 36 months.
 
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/TeamTokensHolder.png">
 
