@@ -1,8 +1,7 @@
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/Globatalent-logo-vert.png" width="450">
 
-# crowdsale
-
-Ethereum contracts for the globatalent crowdsale platform.
+# Crowdsale
+Understanding the Euthereum contracts for the Globatalent crowdsale
 
 ## Technical definition
 ERC20-compliant token, derived from the [MiniMe Token](https://github.com/Giveth/minime) that allows for token cloning (forking).
@@ -23,7 +22,7 @@ This contract provides useful methods to establish the address that can call fun
 
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/Owned.png">
 
-- `onlyOwner()` [L10]: Checks that the address calling the function equals owner address.
+- `onlyOwner()` [L10]: Checks that the address calling the function equals the owner address.
 - `owner` [L15]: Owner address.
 - `Owned()` [L19]: Contract constructor. Sets owner variable to to the address that creates the contract.
 - `newOwner` [L22]: Address of the new owner.
@@ -51,15 +50,15 @@ Interface for ERC20 compatible tokens.
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/ERC20Token.png">
 
 - `totalSupply` [L16]: Variable that contains the total supply of the token.
-- `balanceOf(owner)` [L20]: Returns the token balance of owner.
-- `transfer(to, value)` [L26]: Transfers value amount of tokens from your account to to account.
+- `balanceOf(owner)` [L20]: Returns the token balance of the owner.
+- `transfer(to, value)` [L26]: Transfers value amount of tokens from your account to to another account.
 - `transferFrom(from, to, value)` [L33]: Transfers value amount of tokens from one account to another.
 - `approve(spender, value)` [L39]: Approves someone to spend value amount of tokens from your account.
 - `allowance(owner, spender)` [L44]: Checks the amount of tokens a person has authorized another to spend from his account.
 - `Contract events` [L46-47]: Events to log event from smart contract.
 
 #### [TokenController.sol](/contracts/TokenController.sol)
-Our token contract allows a token controller, this way we can upgrade functionality and modify behaviour.
+Our token contract allows a token controller, this way we can upgrade functionality and modify it's behaviour.
 
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/TokenController.png">
 
@@ -82,7 +81,7 @@ MiniMe token follows the ERC20 standard and implements all the functions describ
 - `parentToken` [L60]: Address from which the token has been cloned, if it’s not been cloned it will be 0x0.
 - `parentSnapShotBlock` [L64]: Block number to determine the initial distribution of the parent token if actual token was cloned.
 - `creationBlock` [L67]: Block number when the token was created.
-- `balances` [L72]: Map that tracks the amount of token of an address
+- `balances` [L72]: Map that tracks the amount of token of/to an address
 - `allowed` [L75]: Map that stores the amount an address can transfer from another account.
 - `totalSupplyHistory` [L78]: Array that stores the history of the token at certain blocknumbers.
 - `transfersEnabled` [L81]: Determines if the token is transferable.
@@ -93,7 +92,7 @@ See [MINIME_README.md](/MINIME_README.md) for more information.
 
 **[ERC20 methods]**
 
-- `doTransfer` [L167]: Actual transfer function in this contract. Inside it balances are checked, the TokenController is warned that a transfer has been done and it checks that transfers are enabled.
+- `doTransfer` [L167]: Actual transfer function in this contract. Inside it, balances are checked. The TokenController is warned that a transfer has been done and it checks that transfers are enabled.
 - `totalSupply(blockNumber)` [L270]: Returns the total supply of tokens at `blockNumber`.
 - `balanceOfAt(owner, blockNumber)` [L283]: Returns the amount of tokens of owner at `blockNumber`.
 - `createCloneToken(cloneTokenName, cloneDecimalUnits,
@@ -121,7 +120,7 @@ This creates an instance of MiniMeToken with the desired parameters to customize
 #### [TokenContribution.sol](/contracts/TokenContribution.sol)
 Inherits from: [Owned.sol](/contracts/Owned.sol), [TokenController](/contracts/TokenController.sol). Uses [SafeMath](/contracts/SafeMath.sol) for uint256 operations.
 
-This is the contract where the contribution takes place. The first part of the contract declares the variables where the address of the holders will be stored, token, sets the sale limit and the max supply of the token.
+This is the contract where the contribution takes place. The first part of the contract declares the variables where the address of the holders will be stored, token, sets the sale limit and the maximum supply of the token.
 
 - [L11] SafeMath is specified for the type uint256, this guarantees that all the operations done with uint256 are not in danger of an overflow.
 - `initialized()` [L40-43]: Modifier to check if the token contribution is initialized.
@@ -133,7 +132,7 @@ This is the contract where the contribution takes place. The first part of the c
 
 - `generate(th, amount)` [L118-126]: The owner of the contract can call this method to generate `amount` tokens to `th` address.
 - `finalize()` [L150-226]: The owner of the contract can call this method to finalize the contribution. After this method is called the correspondent tokens are sent to their holders.
-- `percent(p)` [L228-230]: Does the percent of a number.
+- `percent(p)` [L228-230]: Does the percentage of a number.
 - `isContract(addr)` [L235-242]: Checks if `addr` is a contract.
 - `tokensIssued()` [L250-252]: Returns total tokens issued.
 - `getBlockNumber()` [L260-262]: Returns the block number.
