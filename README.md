@@ -94,8 +94,8 @@ See [MINIME_README.md](/MINIME_README.md) for more information.
 **[ERC20 methods]**
 
 - `doTransfer` [L167]: Actual transfer function in this contract. Inside it balances are checked, the TokenController is warned that a transfer has been done and it checks that transfers are enabled.
-- `balanceOfAt(owner, blockNumber)` [L309]: Returns the amount of tokens of owner at `blockNumber`.
-- `totalSupply(blockNumber)` [L309]: Returns the total supply of tokens at `blockNumber`.
+- `totalSupply(blockNumber)` [L270]: Returns the total supply of tokens at `blockNumber`.
+- `balanceOfAt(owner, blockNumber)` [L283]: Returns the amount of tokens of owner at `blockNumber`.
 - `createCloneToken(cloneTokenName, cloneDecimalUnits,
 cloneTokenSymbol, snapshotBlock, transfersEnabled)` [L344-366]: Creates a new clone token with the initial distribution being this token at `snapshotBlock`.
 - `generateTokens(owner, amount)` [L376-386]: `amount` number of tokens are asigned to `owner`. This method can only be called from the controller of the token.
@@ -162,7 +162,7 @@ Uses SafeMath for uint256 operations.
 #### [AdvisorsTokensHolder.sol](/contracts/AdvisorsTokensHolder.sol)
 
 **[TokenHolder methods]**
-- `collectTokens()`: **[TokenHolder functionality]** - 
+- `collectTokens()`: **[TokenHolder functionality]** - Unlock 20% after 2 months; Then unlock 20% every month.
 
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/AdvisorsTokensHolder.png">
 
