@@ -112,7 +112,38 @@ min(a, b) [L477-479]: Determine the minimum between two uints.
 Inherits from: MiniMeToken.
 This creates an instance of MiniMeToken with the desired parameters to customize the token.
 
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/Token.png">
+
 ### Contribution
+
+#### [TokenContribution.sol](/contracts/TokenContribution.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/TokenContribution.png">
+
+#### [AdvisorsTokensHolder.sol](/contracts/AdvisorsTokensHolder.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/AdvisorsTokensHolder.png">
+
+#### [AirdropTokensHolder.sol](/contracts/AirdropTokensHolder.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/AirdropTokensHolder.png">
+
+#### [BountiesTokensHolder.sol](/contracts/BountiesTokensHolder.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/BountiesTokensHolder.png">
+
+#### [EarlyInvestorsTokensHolder.sol](/contracts/EarlyInvestorsTokensHolder.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/EarlyInvestorsTokensHolder.png">
+
+#### [ReserveTokensHolder.sol](/contracts/ReserveTokensHolder.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/ReserveTokensHolder.png">
+
+#### [TeamTokensHolder.sol](/contracts/TeamTokensHolder.sol)
+
+<img src="https://github.com/Globatalent/crowdsale/blob/master/img/UML/TeamTokensHolder.png">
+
 Inherits from: Owned, TokenController.
 This is the contract where the contribution takes place. The first part of the contract declares the variables where the address of the holders will be stored, token, sets the sale limit and the max supply of the token.
 
