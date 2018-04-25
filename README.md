@@ -1,7 +1,7 @@
 <img src="https://github.com/Globatalent/crowdsale/blob/master/img/Globatalent-logo-vert.png" width="450">
 
 # Crowdsale
-Understanding the Euthereum contracts for the Globatalent crowdsale
+Understanding the Ethereum contracts for the Globatalent crowdsale
 
 ## Technical definition
 ERC20-compliant token, derived from the [MiniMe Token](https://github.com/Giveth/minime) that allows for token cloning (forking).
