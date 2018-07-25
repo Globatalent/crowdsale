@@ -7,6 +7,23 @@ Understanding the Ethereum contracts for the Globatalent crowdsale
 ERC20-compliant token, derived from the [MiniMe Token](https://github.com/Giveth/minime) that allows for token cloning (forking).
 
 ## Contracts
+### Addresses
+* Token: 0xd8bd3958725f216eb236e9dc65b169de48101c6a
+
+* TokenContribution: 0xf8a06ef897755bbd49707d8a8ce0ca9e6a0f0c34
+
+* AdvisorsTokensHolder: 0x17cffeda91185b35d57d4cd1b4e2f861a760af16
+
+* AirdropTokensHolder: 0x49820e81d4d562f2cfbb9854c97ab43fb09a2d10
+
+* BountiesTokensHolder: 0xef47c51a6c1c5c42f13b3539d0421fcbc84ed24c
+
+* EarlyInvestorsTokensHolder: 0x483572613a2283de274dfd6f7ae85d67aef70dfe
+
+* ReserveTokensHolder: 0x05bd9302216f862a1aca5b2c8d16f463290048c4
+
+* TeamTokensHolder: 0xe31bb9b1b4a4e7c7c1df5b2e10f314697e5f802c
+
 ### Utilities
 #### [Controlled.sol](/contracts/Controlled.sol)
 This contract provides useful methods to establish the address that can call functions of another contract.
